@@ -48,6 +48,10 @@ public class Vector {
 		return y;
 	}
 
+	public double getZ() {
+		
+		return z;
+	}
 
 	public void multiply(double d) {
 		
@@ -58,15 +62,20 @@ public class Vector {
 
 	public void subtract(Vector v) {
 		
-		x = x - v.x;
-		y = y - v.y;
-		z = z - v.z;
+		x -= v.getX();
+		y -= v.getY();
+		z -= v.getZ();
 	}
 
 	public void add(Vector v) {
 		
-		x += v.x;
-		y += v.y;
-		z += v.z;
+		x = x + v.getX();
+		y = y + v.getY();
+		z = z + v.getZ();
+	}
+	
+	public Vector clone() {
+		
+		return new Vector(x, y, z);
 	}
 }

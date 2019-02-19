@@ -25,7 +25,7 @@ public class Particle {
 		setInitialPosition();
 		pBest = getInitialPBest();
 		setInitialVelocity(velocity);
-		System.out.println("Velocity:" + velocity);
+		//System.out.println("Velocity:" + velocity);
 		updateLocation();
 	}
 
