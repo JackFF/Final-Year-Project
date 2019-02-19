@@ -23,12 +23,14 @@ public class Main {
 				
 				System.out.println("(A) Which function to use: ");
 				System.out.println("\t(1) x^4 - 2(x^3)");
-				System.out.println("\t(2) x^7 - 5(x^4) + 7(x^2) + 1");
+				System.out.println("\t(2) x^6 - 5(x^4) + 7(x^2) + 1");
+				System.out.println("\t(3) Booth's Function");
+				System.out.println("\t(4) Ackley's Function");
 				System.out.print("\t");
 				
 				functionChoice = input.nextInt();
 				
-				if(functionChoice < 1 || functionChoice > 2) {
+				if(functionChoice < 1 || functionChoice > 4) {
 					
 					System.out.println("\nPlease pick a valid choice\n");
 					Thread.sleep(1000);
@@ -40,7 +42,7 @@ public class Main {
 				Thread.sleep(1000);
 			}
 			
-		} while(functionChoice !=1 && functionChoice != 2);
+		} while(functionChoice !=1 && functionChoice != 2 && functionChoice != 3 && functionChoice != 4);
 		
 		
 		do {
@@ -52,7 +54,7 @@ public class Main {
 				
 				numberOfParticles = input.nextInt();
 				
-				if(numberOfParticles < 5 || numberOfParticles > 100) {
+				if(numberOfParticles < 0 || numberOfParticles > 100) {
 					
 					System.out.println("\nPlease pick a valid choice\n");
 					Thread.sleep(1000);
@@ -65,7 +67,7 @@ public class Main {
 				Thread.sleep(1000);
 			}
 			
-		} while(numberOfParticles < 5 || numberOfParticles > 100);
+		} while(numberOfParticles < 0 || numberOfParticles > 100);
 		
 		
 		do {
@@ -77,7 +79,7 @@ public class Main {
 				
 				numberOfIterations = input.nextInt();
 				
-				if(numberOfIterations < 10 || numberOfIterations > 500) {
+				if(numberOfIterations < 10 || numberOfIterations > 5000) {
 					
 					System.out.println("\nPlease pick a valid choice\n");
 					Thread.sleep(1000);
@@ -90,7 +92,7 @@ public class Main {
 				Thread.sleep(1000);
 			}
 			
-		} while(numberOfIterations < 10 || numberOfIterations > 500);
+		} while(numberOfIterations < 10 || numberOfIterations > 5000);
 		
 		function = getFunction(functionChoice);
 		Swarm swarm = new Swarm(function, numberOfParticles, numberOfIterations);
@@ -105,6 +107,16 @@ public class Main {
 		else if(choice == 2) {
 			
 			return Functions.FunctionChoices.testFunction2;
+		}
+		
+		else if(choice == 3) {
+			
+			return Functions.FunctionChoices.boothsFunction;
+		}
+		
+		else if(choice == 4) {
+			
+			return Functions.FunctionChoices.ackleysFunction;
 		}
 		
 		return null;

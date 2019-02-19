@@ -1,55 +1,72 @@
 package ParticleSwarmOptimizer;
 
 public class Vector {
+	
+	double x, y, z;
 
-	Location location;
-	Velocity velocity;
-	
-	double locationX;
-	double locationY;
-	double locationZ;
-	
-	double velocityX;
-	double velocityY;
-	double velocityZ;
-	
-	public Vector(Location location, Velocity velocity) {
+	public Vector(double x, double y, double z) {
 		
-		this.location = location;
-		this.velocity = velocity;
-	}
-	
-	public Double getX() {
-		
-		return locationX;
-	}
-	
-	public Double getY() {
-		
-		return locationY;
+		this.x = x;
+		this.y = y;
+		this.z = z;
 	}
 
-	public Double getZ() {
-	
-		return locationZ;
+	public void setLocation(double x, double y, double z) {
+		
+		setX(x);
+		setY(y);
+		setZ(z);
+	}
+
+	private void setX(double x) {
+		
+		this.x = x;
 	}
 	
-	public void add() {
+	private void setY(double y) {
 		
-		locationX = location.getX();
-		velocityX = velocity.getX();
-		locationX += velocityX;
+		this.y = y;
+	}
+
+	private void setZ(double z) {
+	
+		this.z = z;
+	}
+	
+	public String toString() {
 		
-		locationY = location.getY();
-		velocityY = velocity.getY();
-		locationY += velocityY;
+		return "x: " + x + " Y: " + y + " Z: " + z;
+	}
+
+	public double getX() {
 		
-		locationZ = location.getZ();
-		velocityZ = velocity.getZ();
-		locationZ += velocityZ;
+		return x;
+	}
+	
+	public double getY() {
 		
-		location.setX(locationX);
-		location.setY(locationY);
-		location.setZ(locationZ);
+		return y;
+	}
+
+
+	public void multiply(double d) {
+		
+		x *= d;
+		y *= d;
+		z *= d;
+	}
+
+	public void subtract(Vector v) {
+		
+		x = x - v.x;
+		y = y - v.y;
+		z = z - v.z;
+	}
+
+	public void add(Vector v) {
+		
+		x += v.x;
+		y += v.y;
+		z += v.z;
 	}
 }

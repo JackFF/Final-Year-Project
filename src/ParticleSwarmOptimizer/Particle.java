@@ -6,62 +6,66 @@ import ParticleSwarmOptimizer.Functions.FunctionChoices;
 
 public class Particle {
 	
-	private Location location;;
-	private Velocity velocity;
-	private Vector vector;
-	private Location pBestLocation;
 	private FunctionChoices function;
-	double maxRange = 101;
+	private Vector location;
+	private Vector velocity;
 	double minRange = -100;
-	double maxVelocity = 11;
-	double minVelocity = -10;
-	double pBest = Double.POSITIVE_INFINITY;
-	double currentFitness;
+	double maxRange = 101;
+	double minVelocity = -5;
+	double maxVelocity = 6;
+	private double pBest;
+	private Vector pBestLocation;
 
-	public Particle(FunctionChoices functionChoice) {
+	public Particle(FunctionChoices function) {
 		
-		this.function = functionChoice;
-		location = new Location(0, 0, 0);
-		velocity = new Velocity(0, 0, 0);
-		setPosition();
-		setVelocity();
-		currentFitness = getCurrentFitness();
-		updatePBest();
+		this.function = function;
+		location = new Vector(0, 0, 0);
+		velocity = new Vector(0, 0, 0);
+		pBestLocation = new Vector(0, 0, 0);
+		setInitialPosition();
+		pBest = getInitialPBest();
+		setInitialVelocity(velocity);
+		System.out.println("Velocity:" + velocity);
+		updateLocation();
 	}
 
-	private void setPosition() {
+	private void setInitialPosition() {
 		
 		double x = ThreadLocalRandom.current().nextDouble(minRange, maxRange);
 		double y = ThreadLocalRandom.current().nextDouble(minRange, maxRange);
 		double z = ThreadLocalRandom.current().nextDouble(minRange, maxRange);
 		
-		location.setX(x);
-		location.setY(y);
-		location.setZ(z);
+		location.setLocation(x, y, z);
 	}
 	
-	public Location getPosition() {
+	private double getInitialPBest() {
 		
-		return location;
+		if(function == FunctionChoices.testFunction1) {
+			
+			pBestLocation = location;
+			return Functions.testFunction1(location.getX());
+		}
+		
+		else if(function == FunctionChoices.testFunction2) {
+			
+			pBestLocation = location;
+			return Functions.testFunction2(location.getX());
+		}
+		
+		else {
+			
+			return 0;
+		}
 	}
 	
-	private void setVelocity() {
+	private void setInitialVelocity(Vector velocity) {
 		
-		double x = ThreadLocalRandom.current().nextDouble(minVelocity, maxVelocity);
-		double y = ThreadLocalRandom.current().nextDouble(minVelocity, maxVelocity);
-		double z = ThreadLocalRandom.current().nextDouble(minVelocity, maxVelocity);
-		
-		velocity.setX(x);
-		velocity.setY(y);
-		velocity.setZ(z);
+		velocity.x = ThreadLocalRandom.current().nextDouble(minVelocity, maxVelocity);
+		velocity.y = ThreadLocalRandom.current().nextDouble(minVelocity, maxVelocity);
+		velocity.z = ThreadLocalRandom.current().nextDouble(minVelocity, maxVelocity);
 	}
 	
-	public Velocity getVelocity() {
-		
-		return velocity;
-	}
-	
-	private double getCurrentFitness() {
+	private double getFitness() {
 		
 		if(function == FunctionChoices.testFunction1) {
 			
@@ -73,14 +77,20 @@ public class Particle {
 			return Functions.testFunction2(location.getX());
 		}
 		
-		return 0;
+		else {
+			
+			return 0;
+		}
 	}
 	
-	private void updatePBest() {
+	public void updatePBest(Particle particle) {
 		
-		if(currentFitness < pBest) {
+		double currentFitness = getFitness();
+		
+		if(currentFitness < particle.getPBest()) {
 			
 			pBest = currentFitness;
+			pBestLocation = location;
 		}
 	}
 	
@@ -89,8 +99,28 @@ public class Particle {
 		return pBest;
 	}
 	
-	public String toString() {
+	public Vector getPBestLocation() {
 		
-		return "pBest: " + pBest;
+		return pBestLocation;
+	}
+
+	public Vector getLocation() {
+		
+		return location;
+	}
+
+	public Vector getVelocity() {
+		
+		return velocity;
+	}
+
+	public void setVelocity(Vector velocity) {
+		
+		this.velocity = velocity;
+	}
+
+	public void updateLocation() {
+		
+		this.location.add(velocity);
 	}
 }
