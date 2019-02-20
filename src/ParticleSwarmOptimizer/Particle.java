@@ -24,9 +24,9 @@ public class Particle {
 		pBestLocation = new Vector(0, 0, 0);
 		setInitialPosition();
 		pBest = getInitialPBest();
-		setInitialVelocity(velocity);
+		////setInitialVelocity(velocity);
 		//System.out.println("Velocity:" + velocity);
-		updateLocation();
+		////updateLocation();
 	}
 
 	private void setInitialPosition() {
@@ -43,6 +43,8 @@ public class Particle {
 		if(function == FunctionChoices.testFunction1) {
 			
 			pBestLocation = location;
+			System.out.println("Initial x-location: " + location.getX());
+			System.out.println(Functions.testFunction1(location.getX()));
 			return Functions.testFunction1(location.getX());
 		}
 		
@@ -50,6 +52,18 @@ public class Particle {
 			
 			pBestLocation = location;
 			return Functions.testFunction2(location.getX());
+		}
+		
+		else if(function == FunctionChoices.boothsFunction) {
+			
+			pBestLocation = location;
+			return Functions.boothsFunction(location.getX(), location.getY());
+		}
+		
+		else if(function == FunctionChoices.ackleysFunction) {
+			
+			pBestLocation = location;
+			return Functions.ackleysFunction(location.getX(), location.getY());
 		}
 		
 		else {
@@ -77,6 +91,16 @@ public class Particle {
 			return Functions.testFunction2(location.getX());
 		}
 		
+		else if(function == FunctionChoices.boothsFunction) {
+			
+			return Functions.boothsFunction(location.getX(), location.getY());
+		}
+		
+		else if(function == FunctionChoices.ackleysFunction) {
+			
+			return Functions.ackleysFunction(location.getX(), location.getY());
+		}
+		
 		else {
 			
 			return 0;
@@ -90,8 +114,16 @@ public class Particle {
 		if(currentFitness < particle.getPBest()) {
 			
 			pBest = currentFitness;
-			pBestLocation = location;
+			System.out.println("pBest Ori: " + pBest);
+			//pBestLocation = particle.getLocation();
+			//System.out.println("pBest Ori Loc: " + pBestLocation);
+			particle.updatePBestLocation(particle.getLocation());
 		}
+	}
+	
+	private void updatePBestLocation(Vector location) {
+		
+		this.pBestLocation = location.clone();
 	}
 	
 	public double getPBest() {

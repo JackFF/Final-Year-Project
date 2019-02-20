@@ -15,8 +15,10 @@ public class Swarm {
 	Vector gBestLocation = new Vector(0, 0, 0);
 	double inertia = 0.729844;
 	double social = 1.496180;
-	double inertiaTest = 0.36;
-	double socialTest = 0.75;
+	//double inertiaTest = 0.36;
+	//double socialTest = 0.75;
+	
+	Vector realGBestLocation;
 
 	public Swarm(FunctionChoices function, int numberOfParticles, int numberOfIterations) {
 		
@@ -49,6 +51,8 @@ public class Swarm {
 			if(gBest < oldGBest) {
 				
 				System.out.println("Global Best Evaluation (Iteration " + (i + 1) + "):\t" + gBest);
+				System.out.println("Global Best Evaluation (Iteration " + (i + 1) + "):\t" + gBestLocation);
+				System.out.println("x realMotherFculker = " + realGBestLocation.getX());
                 oldGBest = gBest;
 			}
 			
@@ -66,17 +70,25 @@ public class Swarm {
 			
 			for(int j = 0; j < particles.size(); j++) {
 				
-				//System.out.println("Particle " + j + " Old position: " + particles.get(j).getLocation());
+				System.out.println("Particle " + j);
+				System.out.println("Particle " + j + " Old position: " + particles.get(j).getLocation());
 				updateVelocity(particles.get(j));
 				particles.get(j).updateLocation();
-				//System.out.println("Particle " + j + " New position: " + particles.get(j).getLocation());
+				System.out.println("Particle " + j + " New position: " + particles.get(j).getLocation());
+				
+				//updateGBest(particles.get(j));
 			}
 		}
 		
+		double test = (int) Math.round(gBest * 100000d) / 100000d;
 		System.out.println("---------------------------RESULT---------------------------");
         System.out.println("x = " + gBestLocation.getX());
         System.out.println("y = " + gBestLocation.getY());
+        System.out.println("x realMotherFculker = " + realGBestLocation.getX());
+        System.out.println("y realMotherFculker = " + realGBestLocation.getY());
+        //System.out.println("y = " + gBestLocation.getY());
         System.out.println("Final Best Evaluation: " + gBest);
+        System.out.println("Final Best Evaluation Rounded: " + test);
         System.out.println("---------------------------COMPLETE-------------------------");
 	}
 
@@ -87,7 +99,10 @@ public class Swarm {
 			gBest = particle.getPBest();
 			System.out.println("New gBest: " + gBest);
 			gBestLocation = particle.getPBestLocation();
+			System.out.println("Particles Best Location: " + particle.getPBestLocation());
 			System.out.println("New gBest Location: " + gBestLocation);
+			
+			realGBestLocation = gBestLocation.clone();
 		}
 	}
 	
@@ -107,9 +122,10 @@ public class Swarm {
 		
 		Vector pB = particle.getPBestLocation();
 		Vector pBest = pB.clone();
-		////System.out.println("pBest: " + pBest);
+		System.out.println("pBest: " + pBest);
 		
-		Vector gBest = gBestLocation.clone();
+		Vector gB = gBestLocation;
+		Vector gBest = gB.clone();
 		
 		Vector cL1 = particle.getLocation();
 		Vector currentLocation1 = cL1.clone();
@@ -117,12 +133,15 @@ public class Swarm {
 		Vector cL2 = particle.getLocation();
 		Vector currentLocation2 = cL2.clone();
 		
-		////System.out.println("cL1: " + currentLocation1);
+		System.out.println("cL1: " + currentLocation1);
 		////System.out.println("cL2: " + currentLocation2);
 		
 		Random random = new Random();
 		double r1 = random.nextDouble();
 		double r2 = random.nextDouble();
+		
+		//System.out.println("r1: " + r1);
+		//System.out.println("r2: " + r2);
 		
 		Vector newVelocity = oldVelocity;
 		////System.out.println("Old Velocity: " + oldVelocity);
@@ -131,15 +150,18 @@ public class Swarm {
 		////System.out.println("New Velocity1: " + newVelocity);
 		
 		////System.out.println("Cl b4 - pBest: " + currentLocation1);
-		////System.out.println("pBest: b4" + pBest);
+		System.out.println("pBest: b4" + pBest);
 		pBest.subtract(currentLocation1);
 		//currentLocation = particle.getLocation();
 		////System.out.println("pBest: a4" + pBest);
 		////System.out.println("Cl a4 - pBest: " + currentLocation1);
 		Vector test = particle.getLocation();
 		////System.out.println("Test " + test);
+		System.out.println("pBest b4 social: " + pBest);
 		pBest.multiply(social);
+		System.out.println("pBest b4 r1: " + pBest);
 		pBest.multiply(r1);
+		System.out.println("pBest a4 r1: " + pBest);
 		newVelocity.add(pBest);
 		////System.out.println("pBest: " + pBest);
 		////System.out.println("New Velocity2: " + newVelocity);
