@@ -66,6 +66,18 @@ public class Particle {
 			return Functions.ackleysFunction(location.getX(), location.getY());
 		}
 		
+		else if(function == FunctionChoices.sphere) {
+			
+			pBestLocation = location;
+			return Functions.sphere(location.getX(), location.getY(), location.getZ());
+		}
+		
+		else if(function == FunctionChoices.rosenbrock) {
+			
+			pBestLocation = location;
+			return Functions.rosenbrock(location.getX(), location.getY());
+		}
+		
 		else {
 			
 			return 0;
@@ -99,6 +111,16 @@ public class Particle {
 		else if(function == FunctionChoices.ackleysFunction) {
 			
 			return Functions.ackleysFunction(location.getX(), location.getY());
+		}
+		
+		else if(function == FunctionChoices.sphere) {
+			
+			return Functions.sphere(location.getX(), location.getY(), location.getZ());
+		}
+		
+		else if(function == FunctionChoices.rosenbrock) {
+			
+			return Functions.rosenbrock(location.getX(), location.getY());
 		}
 		
 		else {

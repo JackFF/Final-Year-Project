@@ -81,14 +81,19 @@ public class Swarm {
 		}
 		
 		double test1 = (int) Math.round(gBestLocation.getX() * 100000d) / 100000d;
+		double test2 = (int) Math.round(gBestLocation.getY() * 100000d) / 100000d;
+		double test3 = (int) Math.round(gBestLocation.getZ() * 100000d) / 100000d;
 		double test = (int) Math.round(gBest * 100000d) / 100000d;
 		System.out.println("---------------------------RESULT---------------------------");
         System.out.println("x = " + gBestLocation.getX());
         System.out.println("y = " + gBestLocation.getY());
+        System.out.println("z = " + gBestLocation.getZ());
         System.out.println("x real = " + realGBestLocation.getX());
         System.out.println("x rounded = " + test1);
         System.out.println("y real = " + realGBestLocation.getY());
-        //System.out.println("y = " + gBestLocation.getY());
+        System.out.println("y rounded = " + test2);
+        System.out.println("z real = " + realGBestLocation.getZ());
+        System.out.println("z rounded = " + test3);
         System.out.println("Final Best Evaluation: " + gBest);
         System.out.println("Final Best Evaluation Rounded: " + test);
         System.out.println("---------------------------COMPLETE-------------------------");

@@ -26,11 +26,13 @@ public class Main {
 				System.out.println("\t(2) x^6 - 5(x^4) + 7(x^2) + 1");
 				System.out.println("\t(3) Booth's Function");
 				System.out.println("\t(4) Ackley's Function");
+				System.out.println("\t(5) Sphere");
+				System.out.println("\t(6) Rosenbrock");
 				System.out.print("\t");
 				
 				functionChoice = input.nextInt();
 				
-				if(functionChoice < 1 || functionChoice > 4) {
+				if(functionChoice < 1 || functionChoice > 6) {
 					
 					System.out.println("\nPlease pick a valid choice\n");
 					Thread.sleep(1000);
@@ -42,7 +44,7 @@ public class Main {
 				Thread.sleep(1000);
 			}
 			
-		} while(functionChoice !=1 && functionChoice != 2 && functionChoice != 3 && functionChoice != 4);
+		} while(functionChoice !=1 && functionChoice != 2 && functionChoice != 3 && functionChoice != 4 && functionChoice != 5 && functionChoice != 6);
 		
 		
 		do {
@@ -117,6 +119,16 @@ public class Main {
 		else if(choice == 4) {
 			
 			return Functions.FunctionChoices.ackleysFunction;
+		}
+		
+		else if(choice == 5) {
+			
+			return Functions.FunctionChoices.sphere;
+		}
+		
+		else if(choice == 6) {
+			
+			return Functions.FunctionChoices.rosenbrock;
 		}
 		
 		return null;
