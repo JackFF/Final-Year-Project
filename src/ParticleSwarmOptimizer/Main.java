@@ -9,8 +9,8 @@ public class Main {
 
 	public static void main(String[] args) throws InterruptedException {
 		
-		GUI gui = new GUI();
-		gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//GUI gui = new GUI();
+		//gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		Scanner input = new Scanner(System.in);
 		int functionChoice = 0;
@@ -102,6 +102,11 @@ public class Main {
 		} while(numberOfIterations < 10 || numberOfIterations > 5000);
 		
 		function = getFunction(functionChoice);
+		
+		for(int i = 0; i < 100; i++) {
+			
+			Swarm swarm = new Swarm(function, numberOfParticles, numberOfIterations);
+		}
 		//Swarm swarm = new Swarm(function, numberOfParticles, numberOfIterations);
 	}
 	

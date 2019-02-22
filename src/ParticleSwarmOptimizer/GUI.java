@@ -95,7 +95,7 @@ public class GUI extends JFrame {
 		start = new JButton("Start");
 		container.add(start);
 		
-		setSize(500, 375);
+		setSize(500, 600);
 		setVisible(true);
 		setLocationRelativeTo(null);
 		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -118,10 +118,13 @@ public class GUI extends JFrame {
 						Swarm swarm = new Swarm(function, numberOfParticlesSelected, numberOfIterationsSelected);
 						
 						whiteSpace4 = new JLabel("                                                     "
+								+ "                                                                    "
 								+ "                                                                    ");
 						container.add(whiteSpace4);
 						
-						results = new JLabel("Test");
+						double gBest = swarm.gBest;
+						
+						results = new JLabel("gBest: " + gBest);
 						container.add(results);
 						
 						revalidate();

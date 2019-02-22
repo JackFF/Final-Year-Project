@@ -17,6 +17,7 @@ public class Swarm {
 	double social = 1.496180;
 	//double inertiaTest = 0.36;
 	//double socialTest = 0.75;
+	Exporter exp = new Exporter();
 	
 	Vector realGBestLocation;
 
@@ -97,6 +98,7 @@ public class Swarm {
         System.out.println("Final Best Evaluation: " + gBest);
         System.out.println("Final Best Evaluation Rounded: " + test);
         System.out.println("---------------------------COMPLETE-------------------------");
+        exp.export(gBest);
 	}
 
 	private void updateGBest(Particle particle) {
