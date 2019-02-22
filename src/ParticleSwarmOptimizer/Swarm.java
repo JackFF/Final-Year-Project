@@ -98,7 +98,7 @@ public class Swarm {
         System.out.println("Final Best Evaluation: " + gBest);
         System.out.println("Final Best Evaluation Rounded: " + test);
         System.out.println("---------------------------COMPLETE-------------------------");
-        exp.export(gBest);
+        exp.export(gBest, gBestLocation.getX(), gBestLocation.getY(), gBestLocation.getZ(), function, numberOfParticles, numberOfIterations);
 	}
 
 	private void updateGBest(Particle particle) {
