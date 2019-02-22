@@ -29,6 +29,7 @@ public class Functions {
 	
 	public static double sphere(double x, double y, double z) {
 		
+		System.out.print("sphere fak");
         return Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2);
     }
 	
@@ -44,6 +45,11 @@ public class Functions {
         return p6;
     }
 	
+	public static double griewank(double x, double y) {
+		
+        return 0;
+    }
+	
 	public enum FunctionChoices{
 		
 		testFunction1,
@@ -51,6 +57,7 @@ public class Functions {
 		boothsFunction,
 		ackleysFunction,
 		sphere,
-		rosenbrock
+		rosenbrock,
+		griewank
 	}
 }

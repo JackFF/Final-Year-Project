@@ -123,6 +123,11 @@ public class Particle {
 			return Functions.rosenbrock(location.getX(), location.getY());
 		}
 		
+		else if(function == FunctionChoices.griewank) {
+			
+			return Functions.griewank(location.getX(), location.getY());
+		}
+		
 		else {
 			
 			return 0;

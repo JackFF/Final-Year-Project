@@ -3,9 +3,14 @@ package ParticleSwarmOptimizer;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+import javax.swing.JFrame;
+
 public class Main {
 
 	public static void main(String[] args) throws InterruptedException {
+		
+		GUI gui = new GUI();
+		gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		Scanner input = new Scanner(System.in);
 		int functionChoice = 0;
@@ -97,7 +102,7 @@ public class Main {
 		} while(numberOfIterations < 10 || numberOfIterations > 5000);
 		
 		function = getFunction(functionChoice);
-		Swarm swarm = new Swarm(function, numberOfParticles, numberOfIterations);
+		//Swarm swarm = new Swarm(function, numberOfParticles, numberOfIterations);
 	}
 	
 	public static Functions.FunctionChoices getFunction(int choice) {
@@ -129,6 +134,11 @@ public class Main {
 		else if(choice == 6) {
 			
 			return Functions.FunctionChoices.rosenbrock;
+		}
+		
+		else if(choice == 7) {
+			
+			return Functions.FunctionChoices.griewank;
 		}
 		
 		return null;
