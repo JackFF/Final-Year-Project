@@ -19,6 +19,7 @@ public class Swarm {
 	//double inertiaTest = 0.36;
 	//double socialTest = 0.75;
 	Exporter exp = new Exporter();
+	boolean check;
 	
 	Vector realGBestLocation;
 
@@ -46,22 +47,59 @@ public class Swarm {
 		
 		
 		double oldGBest = gBest;
-		System.out.println("--------------------------Beginning Optimization-------------------------");
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
+		
+		if(dimensions == 1) {
 			
-			e.printStackTrace();
+			System.out.println("--------------------------Beginning Optimization-------------------------");
+            System.out.println("Global Best Value at Iteration " + 0 + ":\t"  + gBest);
+            System.out.println("Global Best Location at Iteration " + 0 + ":\t" + "X: " + gBestLocation.getX() + "\n");
 		}
-        System.out.println("Global Best Value at Iteration " + 0 + ":\t"  + gBest);
+		
+		else if(dimensions == 2) {
+			
+			System.out.println("--------------------------Beginning Optimization-------------------------");
+            System.out.println("Global Best Value at Iteration " + 0 + ":\t"  + gBest);
+            System.out.println("Global Best Location at Iteration " + 0 + ":\t" + "X: " + gBestLocation.getX() + " Y: " + gBestLocation.getY() + "\n");
+		}
+		
+		else if(dimensions == 3) {
+			
+			System.out.println("--------------------------Beginning Optimization-------------------------");
+            System.out.println("Global Best Value at Iteration " + 0 + ":\t"  + gBest);
+            System.out.println("Global Best Location at Iteration " + 0 + ":\t" + "X: " + gBestLocation.getX() + " Y: " + gBestLocation.getY() + " Z: " + gBestLocation.getZ() + "\n");
+		}
 		
 		for(int i = 0; i < numberOfIterations; i++) {
 			
+			//updatePrintout();
 			if(gBest < oldGBest) {
 				
-				System.out.println("Global Best Value at Iteration " + (i + 1) + ":\t" + gBest);
-				System.out.println("Global Best Location at Iteration " + (i + 1) + ":\t" + gBestLocation + "\n");
+				check = true;
+				
+				/*if(dimensions == 1) {
+					
+					System.out.println("Global Best Value at Iteration " + (i + 1) + ":\t"  + gBest);
+	                System.out.println("Global Best Location at Iteration " + (i + 1) + ":\t" + "X: " + gBestLocation.getX() + "\n");
+				}
+				
+				else if(dimensions == 2) {
+					
+					System.out.println("Global Best Value at Iteration " + (i + 1) + ":\t"  + gBest);
+	                System.out.println("Global Best Location at Iteration " + (i + 1) + ":\t" + "X: " + gBestLocation.getX() + " Y: " + gBestLocation.getY() + "\n");
+				}
+				
+				else if(dimensions == 3) {
+					
+					System.out.println("Global Best Value at Iteration " + (i + 1) + ":\t"  + gBest);
+	                System.out.println("Global Best Location at Iteration " + (i + 1) + ":\t" + "X: " + gBestLocation.getX() + " Y: " + gBestLocation.getY() + " Z: " + gBestLocation.getZ() + "\n");
+				}*/
+				
                 oldGBest = gBest;
+			}
+			
+			else {
+				
+				check = false;
 			}
 			
 			
@@ -84,27 +122,61 @@ public class Swarm {
 				particles.get(j).updateLocation();
 				//System.out.println("Particle " + j + " New position: " + particles.get(j).getLocation());
 				
-				//updateGBest(particles.get(j));
+				updateGBest(particles.get(j));
 			}
+			
+			updatePrintout(i, check);
 		}
 		
-		double test1 = (int) Math.round(gBestLocation.getX() * 100000d) / 100000d;
-		double test2 = (int) Math.round(gBestLocation.getY() * 100000d) / 100000d;
-		double test3 = (int) Math.round(gBestLocation.getZ() * 100000d) / 100000d;
-		double test = (int) Math.round(gBest * 100000d) / 100000d;
 		System.out.println("---------------------------RESULT---------------------------");
-        System.out.println("x = " + gBestLocation.getX());
-        System.out.println("y = " + gBestLocation.getY());
-        System.out.println("z = " + gBestLocation.getZ());
-        System.out.println("x real = " + realGBestLocation.getX());
-        System.out.println("x rounded = " + test1);
-        System.out.println("y real = " + realGBestLocation.getY());
-        System.out.println("y rounded = " + test2);
-        System.out.println("z real = " + realGBestLocation.getZ());
-        System.out.println("z rounded = " + test3);
-        System.out.println("Final Best Evaluation: " + gBest);
-        System.out.println("Final Best Evaluation Rounded: " + test);
-        exp.export(gBest, gBestLocation.getX(), gBestLocation.getY(), gBestLocation.getZ(), function, numberOfParticles, numberOfIterations);
+		
+		if(dimensions == 1) {
+			
+			System.out.println("X: " + gBestLocation.getX());
+		    System.out.println("Final Best Evaluation: " + gBest);
+		    exp.export(gBest, gBestLocation.getX(), gBestLocation.getY(), gBestLocation.getZ(), function, numberOfParticles, numberOfIterations, dimensions);
+		}
+		
+		else if(dimensions == 2) {
+			
+			System.out.println("X: " + gBestLocation.getX());
+			System.out.println("Y: " + gBestLocation.getY());
+		    System.out.println("Final Best Evaluation: " + gBest);
+		    exp.export(gBest, gBestLocation.getX(), gBestLocation.getY(), gBestLocation.getZ(), function, numberOfParticles, numberOfIterations, dimensions);
+		}
+		
+		else if(dimensions == 3) {
+			
+			System.out.println("X: " + gBestLocation.getX());
+			System.out.println("Y: " + gBestLocation.getY());
+			System.out.println("Z: " + gBestLocation.getZ());
+		    System.out.println("Final Best Evaluation: " + gBest);
+		    exp.export(gBest, gBestLocation.getX(), gBestLocation.getY(), gBestLocation.getZ(), function, numberOfParticles, numberOfIterations, dimensions);
+		}
+	}
+
+	private void updatePrintout(int i, boolean check) {
+		
+		if(check == true) {
+			
+			if(dimensions == 1) {
+				
+				System.out.println("Global Best Value at Iteration " + (i + 1) + ":\t"  + gBest);
+	        	System.out.println("Global Best Location at Iteration " + (i + 1) + ":\t" + "X: " + gBestLocation.getX() + "\n");
+			}
+		
+			else if(dimensions == 2) {
+			
+				System.out.println("Global Best Value at Iteration " + (i + 1) + ":\t"  + gBest);
+				System.out.println("Global Best Location at Iteration " + (i + 1) + ":\t" + "X: " + gBestLocation.getX() + " Y: " + gBestLocation.getY() + "\n");
+			}
+		
+			else if(dimensions == 3) {
+			
+				System.out.println("Global Best Value at Iteration " + (i + 1) + ":\t"  + gBest);
+				System.out.println("Global Best Location at Iteration " + (i + 1) + ":\t" + "X: " + gBestLocation.getX() + " Y: " + gBestLocation.getY() + " Z: " + gBestLocation.getZ() + "\n");
+			}
+		}
 	}
 
 	private void updateGBest(Particle particle) {
@@ -170,7 +242,7 @@ public class Swarm {
 		//currentLocation = particle.getLocation();
 		////System.out.println("pBest: a4" + pBest);
 		////System.out.println("Cl a4 - pBest: " + currentLocation1);
-		Vector test = particle.getLocation();
+		//Vector test = particle.getLocation();
 		////System.out.println("Test " + test);
 		//System.out.println("pBest b4 social: " + pBest);
 		pBest.multiply(social);

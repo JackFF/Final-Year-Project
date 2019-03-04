@@ -82,6 +82,20 @@ public class Main {
 			} while(dimensions < 1 || dimensions > 3);
 		}
 		
+		else if(functionChoice == 1 || functionChoice == 2) {
+			
+			dimensions = 1;
+		}
+		
+		else if(functionChoice == 3 || functionChoice == 4 || functionChoice == 6) {
+			
+			dimensions = 2;
+		}
+		
+		else if(functionChoice == 5) {
+			
+			dimensions = 3;
+		}
 		
 		do {
 			
@@ -134,11 +148,11 @@ public class Main {
 		
 		function = getFunction(functionChoice);
 		
-		/*for(int i = 0; i < 100; i++) {
+		for(int i = 0; i < 100; i++) {
 			
 			Swarm swarm = new Swarm(function, numberOfParticles, numberOfIterations, dimensions);
-		}*/
-		Swarm swarm = new Swarm(function, numberOfParticles, numberOfIterations, dimensions);
+		}
+		//Swarm swarm = new Swarm(function, numberOfParticles, numberOfIterations, dimensions);
 	}
 	
 	public static Functions.FunctionChoices getFunction(int choice) {
