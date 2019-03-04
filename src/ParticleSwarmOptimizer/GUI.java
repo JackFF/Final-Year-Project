@@ -116,7 +116,7 @@ public class GUI extends JFrame {
 						
 						function = getFunction(functionChoice);
 						System.out.println(function);
-						Swarm swarm = new Swarm(function, numberOfParticlesSelected, numberOfIterationsSelected);
+						Swarm swarm = new Swarm(function, numberOfParticlesSelected, numberOfIterationsSelected, 0);
 						
 						whiteSpace4 = new JLabel("                                                     "
 								+ "                                                                    "

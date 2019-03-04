@@ -9,14 +9,15 @@ public class Main {
 
 	public static void main(String[] args) throws InterruptedException {
 		
-		GUI gui = new GUI();
-		gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//GUI gui = new GUI();
+		//gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		Scanner input = new Scanner(System.in);
 		int functionChoice = 0;
 		int numberOfParticles = 0;
 		int numberOfIterations = 0;
 		Functions.FunctionChoices function = null;
+		int dimensions = 0;
 		
 		System.out.println("Welcome to my Particle Swarm Optimizer!");
 		System.out.println("You must select each of the following: ");
@@ -34,11 +35,12 @@ public class Main {
 				System.out.println("\t(5) Sphere");
 				System.out.println("\t(6) Rosenbrock");
 				System.out.println("\t(7) Griewank");
+				System.out.println("\t(8) Rastrigin");
 				System.out.print("\t");
 				
 				functionChoice = input.nextInt();
 				
-				if(functionChoice < 1 || functionChoice > 7) {
+				if(functionChoice < 1 || functionChoice > 8) {
 					
 					System.out.println("\nPlease pick a valid choice\n");
 					Thread.sleep(1000);
@@ -50,7 +52,35 @@ public class Main {
 				Thread.sleep(1000);
 			}
 			
-		} while(functionChoice !=1 && functionChoice != 2 && functionChoice != 3 && functionChoice != 4 && functionChoice != 5 && functionChoice != 6 && functionChoice != 7);
+		} while(functionChoice !=1 && functionChoice != 2 && functionChoice != 3 && functionChoice != 4 && functionChoice != 5 && functionChoice != 6 && functionChoice != 7 && functionChoice != 8);
+		
+		
+		if(functionChoice == 7 || functionChoice == 8) {
+			
+			do {
+				
+				try {
+					
+					System.out.println("(A2) The number of dimensions to use: (Between 1 and 3)");
+					System.out.print("\t");
+					
+					dimensions = input.nextInt();
+					
+					if(dimensions < 1 || dimensions > 3) {
+						
+						System.out.println("\nPlease pick a valid choice\n");
+						Thread.sleep(1000);
+					}
+					
+				} catch(InputMismatchException e) {
+					
+					System.out.println("\nPlease enter an integer\n");
+					input.nextLine();
+					Thread.sleep(1000);
+				}
+				
+			} while(dimensions < 1 || dimensions > 3);
+		}
 		
 		
 		do {
@@ -106,9 +136,9 @@ public class Main {
 		
 		/*for(int i = 0; i < 100; i++) {
 			
-			Swarm swarm = new Swarm(function, numberOfParticles, numberOfIterations);
+			Swarm swarm = new Swarm(function, numberOfParticles, numberOfIterations, dimensions);
 		}*/
-		//Swarm swarm = new Swarm(function, numberOfParticles, numberOfIterations);
+		Swarm swarm = new Swarm(function, numberOfParticles, numberOfIterations, dimensions);
 	}
 	
 	public static Functions.FunctionChoices getFunction(int choice) {
@@ -145,6 +175,11 @@ public class Main {
 		else if(choice == 7) {
 			
 			return Functions.FunctionChoices.griewank;
+		}
+		
+		else if(choice == 8) {
+			
+			return Functions.FunctionChoices.rastrigin;
 		}
 		
 		return null;

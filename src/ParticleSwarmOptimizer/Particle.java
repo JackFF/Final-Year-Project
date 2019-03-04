@@ -9,16 +9,18 @@ public class Particle {
 	private FunctionChoices function;
 	private Vector location;
 	private Vector velocity;
-	double minRange = -100;
-	double maxRange = 101;
+	double minRange = 0;
+	double maxRange = 0;
 	double minVelocity = -5;
 	double maxVelocity = 6;
 	private double pBest;
 	private Vector pBestLocation;
+	int dimensions;
 
-	public Particle(FunctionChoices function) {
+	public Particle(FunctionChoices function, int dimensions) {
 		
 		this.function = function;
+		this.dimensions = dimensions;
 		location = new Vector(0, 0, 0);
 		velocity = new Vector(0, 0, 0);
 		pBestLocation = new Vector(0, 0, 0);
@@ -30,6 +32,54 @@ public class Particle {
 	}
 
 	private void setInitialPosition() {
+		
+		if(function == FunctionChoices.testFunction1) {
+			
+			minRange = -100;
+			maxRange = 100;
+		}
+		
+		else if(function == FunctionChoices.testFunction2) {
+			
+			minRange = -100;
+			maxRange = 100;
+		}
+		
+		else if(function == FunctionChoices.boothsFunction) {
+			
+			minRange = -100;
+			maxRange = 100;
+		}
+		
+		else if(function == FunctionChoices.ackleysFunction) {
+			
+			minRange = -32;
+			maxRange = 32;
+		}
+		
+		else if(function == FunctionChoices.sphere) {
+			
+			minRange = -5.12;
+			maxRange = 5.12;
+		}
+		
+		else if(function == FunctionChoices.rosenbrock) {
+			
+			minRange = -2.048;
+			maxRange = 2.048;
+		}
+		
+		else if(function == FunctionChoices.griewank) {
+			
+			minRange = -600;
+			maxRange = 600;
+		}
+		
+		else if(function == FunctionChoices.rastrigin) {
+			
+			minRange = -5.12;
+			maxRange = 5.12;
+		}
 		
 		double x = ThreadLocalRandom.current().nextDouble(minRange, maxRange);
 		double y = ThreadLocalRandom.current().nextDouble(minRange, maxRange);
@@ -43,8 +93,8 @@ public class Particle {
 		if(function == FunctionChoices.testFunction1) {
 			
 			pBestLocation = location;
-			System.out.println("Initial x-location: " + location.getX());
-			System.out.println(Functions.testFunction1(location.getX()));
+			//System.out.println("Initial x-location: " + location.getX());
+			//System.out.println(Functions.testFunction1(location.getX()));
 			return Functions.testFunction1(location.getX());
 		}
 		
@@ -80,8 +130,44 @@ public class Particle {
 		
 		else if(function == FunctionChoices.griewank) {
 			
-			pBestLocation = location;
-			return Functions.griewank(location.getX(), location.getY());
+			if(dimensions == 1) {
+				
+				pBestLocation = location;
+				return Functions.griewank(location.getX());
+			}
+			
+			else if(dimensions == 2) {
+				
+				pBestLocation = location;
+				return Functions.griewank(location.getX(), location.getY());
+			}
+			
+			else {
+				
+				pBestLocation = location;
+				return Functions.griewank(location.getX(), location.getY(), location.getZ());
+			}
+		}
+		
+		else if(function == FunctionChoices.rastrigin) {
+			
+			if(dimensions == 1) {
+				
+				pBestLocation = location;
+				return Functions.rastrigin(location.getX());
+			}
+			
+			else if(dimensions == 2) {
+				
+				pBestLocation = location;
+				return Functions.rastrigin(location.getX(), location.getY());
+			}
+			
+			else {
+				
+				pBestLocation = location;
+				return Functions.rastrigin(location.getX(), location.getY(), location.getZ());
+			}
 		}
 		
 		else {
@@ -131,7 +217,38 @@ public class Particle {
 		
 		else if(function == FunctionChoices.griewank) {
 			
-			return Functions.griewank(location.getX(), location.getY());
+			if(dimensions == 1) {
+				
+				return Functions.griewank(location.getX());
+			}
+			
+			else if(dimensions == 2) {
+				
+				return Functions.griewank(location.getX(), location.getY());
+			}
+			
+			else {
+				
+				return Functions.griewank(location.getX(), location.getY(), location.getZ());
+			}
+		}
+		
+		else if(function == FunctionChoices.rastrigin) {
+			
+			if(dimensions == 1) {
+				
+				return Functions.rastrigin(location.getX());
+			}
+			
+			else if(dimensions == 2) {
+				
+				return Functions.rastrigin(location.getX(), location.getY());
+			}
+			
+			else {
+				
+				return Functions.rastrigin(location.getX(), location.getY(), location.getZ());
+			}
 		}
 		
 		else {
@@ -147,7 +264,7 @@ public class Particle {
 		if(currentFitness < particle.getPBest()) {
 			
 			pBest = currentFitness;
-			System.out.println("pBest Ori: " + pBest);
+			//System.out.println("pBest Ori: " + pBest);
 			//pBestLocation = particle.getLocation();
 			//System.out.println("pBest Ori Loc: " + pBestLocation);
 			particle.updatePBestLocation(particle.getLocation());

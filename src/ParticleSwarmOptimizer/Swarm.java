@@ -10,6 +10,7 @@ public class Swarm {
 	FunctionChoices function;
 	int numberOfParticles;
 	int numberOfIterations;
+	int dimensions;
 	ArrayList<Particle> particles;
 	double gBest = Double.POSITIVE_INFINITY;
 	Vector gBestLocation = new Vector(0, 0, 0);
@@ -21,11 +22,12 @@ public class Swarm {
 	
 	Vector realGBestLocation;
 
-	public Swarm(FunctionChoices function, int numberOfParticles, int numberOfIterations) {
+	public Swarm(FunctionChoices function, int numberOfParticles, int numberOfIterations, int dimensions) {
 		
 		this.function = function;
 		this.numberOfParticles = numberOfParticles;
 		this.numberOfIterations = numberOfIterations;
+		this.dimensions = dimensions;
 		particles = new ArrayList<Particle>();
 		gBestLocation = new Vector(0, 0, 0);
 		execute();
@@ -37,23 +39,28 @@ public class Swarm {
 		
 		for(int i = 0; i < numberOfParticles; i++) {
 			
-			Particle particle = new Particle(function);
+			Particle particle = new Particle(function, dimensions);
 			particles.add(particle);
 			updateGBest(particle);
 		}
 		
 		
 		double oldGBest = gBest;
-		System.out.println("--------------------------EXECUTING-------------------------");
-        System.out.println("Global Best Evaluation (Iteration " + 0 + "):\t"  + gBest);
+		System.out.println("--------------------------Beginning Optimization-------------------------");
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			
+			e.printStackTrace();
+		}
+        System.out.println("Global Best Value at Iteration " + 0 + ":\t"  + gBest);
 		
 		for(int i = 0; i < numberOfIterations; i++) {
 			
 			if(gBest < oldGBest) {
 				
-				System.out.println("Global Best Evaluation (Iteration " + (i + 1) + "):\t" + gBest);
-				System.out.println("Global Best Evaluation (Iteration " + (i + 1) + "):\t" + gBestLocation);
-				System.out.println("x realMotherFculker = " + realGBestLocation.getX());
+				System.out.println("Global Best Value at Iteration " + (i + 1) + ":\t" + gBest);
+				System.out.println("Global Best Location at Iteration " + (i + 1) + ":\t" + gBestLocation + "\n");
                 oldGBest = gBest;
 			}
 			
@@ -71,11 +78,11 @@ public class Swarm {
 			
 			for(int j = 0; j < particles.size(); j++) {
 				
-				System.out.println("Particle " + j);
-				System.out.println("Particle " + j + " Old position: " + particles.get(j).getLocation());
+				//System.out.println("Particle " + j);
+				//System.out.println("Particle " + j + " Old position: " + particles.get(j).getLocation());
 				updateVelocity(particles.get(j));
 				particles.get(j).updateLocation();
-				System.out.println("Particle " + j + " New position: " + particles.get(j).getLocation());
+				//System.out.println("Particle " + j + " New position: " + particles.get(j).getLocation());
 				
 				//updateGBest(particles.get(j));
 			}
@@ -97,7 +104,6 @@ public class Swarm {
         System.out.println("z rounded = " + test3);
         System.out.println("Final Best Evaluation: " + gBest);
         System.out.println("Final Best Evaluation Rounded: " + test);
-        System.out.println("---------------------------COMPLETE-------------------------");
         exp.export(gBest, gBestLocation.getX(), gBestLocation.getY(), gBestLocation.getZ(), function, numberOfParticles, numberOfIterations);
 	}
 
@@ -106,10 +112,10 @@ public class Swarm {
 		if(particle.getPBest() < gBest) {
 			
 			gBest = particle.getPBest();
-			System.out.println("New gBest: " + gBest);
+			//System.out.println("New gBest: " + gBest);
 			gBestLocation = particle.getPBestLocation();
-			System.out.println("Particles Best Location: " + particle.getPBestLocation());
-			System.out.println("New gBest Location: " + gBestLocation);
+			//System.out.println("Particles Best Location: " + particle.getPBestLocation());
+			//System.out.println("New gBest Location: " + gBestLocation);
 			
 			realGBestLocation = gBestLocation.clone();
 		}
@@ -131,7 +137,7 @@ public class Swarm {
 		
 		Vector pB = particle.getPBestLocation();
 		Vector pBest = pB.clone();
-		System.out.println("pBest: " + pBest);
+		//System.out.println("pBest: " + pBest);
 		
 		Vector gB = gBestLocation;
 		Vector gBest = gB.clone();
@@ -142,7 +148,7 @@ public class Swarm {
 		Vector cL2 = particle.getLocation();
 		Vector currentLocation2 = cL2.clone();
 		
-		System.out.println("cL1: " + currentLocation1);
+		//System.out.println("cL1: " + currentLocation1);
 		////System.out.println("cL2: " + currentLocation2);
 		
 		Random random = new Random();
@@ -159,18 +165,18 @@ public class Swarm {
 		////System.out.println("New Velocity1: " + newVelocity);
 		
 		////System.out.println("Cl b4 - pBest: " + currentLocation1);
-		System.out.println("pBest: b4" + pBest);
+		//System.out.println("pBest: b4" + pBest);
 		pBest.subtract(currentLocation1);
 		//currentLocation = particle.getLocation();
 		////System.out.println("pBest: a4" + pBest);
 		////System.out.println("Cl a4 - pBest: " + currentLocation1);
 		Vector test = particle.getLocation();
 		////System.out.println("Test " + test);
-		System.out.println("pBest b4 social: " + pBest);
+		//System.out.println("pBest b4 social: " + pBest);
 		pBest.multiply(social);
-		System.out.println("pBest b4 r1: " + pBest);
+		//System.out.println("pBest b4 r1: " + pBest);
 		pBest.multiply(r1);
-		System.out.println("pBest a4 r1: " + pBest);
+		//System.out.println("pBest a4 r1: " + pBest);
 		newVelocity.add(pBest);
 		////System.out.println("pBest: " + pBest);
 		////System.out.println("New Velocity2: " + newVelocity);
@@ -189,7 +195,5 @@ public class Swarm {
 		////System.out.println("New Velocity3: " + newVelocity);
 		
 		particle.setVelocity(newVelocity);
-		
-		
 	}
 }
