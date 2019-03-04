@@ -9,8 +9,8 @@ public class Main {
 
 	public static void main(String[] args) throws InterruptedException {
 		
-		//GUI gui = new GUI();
-		//gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		GUI gui = new GUI();
+		gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		Scanner input = new Scanner(System.in);
 		int functionChoice = 0;
@@ -33,11 +33,12 @@ public class Main {
 				System.out.println("\t(4) Ackley's Function");
 				System.out.println("\t(5) Sphere");
 				System.out.println("\t(6) Rosenbrock");
+				System.out.println("\t(7) Griewank");
 				System.out.print("\t");
 				
 				functionChoice = input.nextInt();
 				
-				if(functionChoice < 1 || functionChoice > 6) {
+				if(functionChoice < 1 || functionChoice > 7) {
 					
 					System.out.println("\nPlease pick a valid choice\n");
 					Thread.sleep(1000);
@@ -49,7 +50,7 @@ public class Main {
 				Thread.sleep(1000);
 			}
 			
-		} while(functionChoice !=1 && functionChoice != 2 && functionChoice != 3 && functionChoice != 4 && functionChoice != 5 && functionChoice != 6);
+		} while(functionChoice !=1 && functionChoice != 2 && functionChoice != 3 && functionChoice != 4 && functionChoice != 5 && functionChoice != 6 && functionChoice != 7);
 		
 		
 		do {
@@ -103,10 +104,10 @@ public class Main {
 		
 		function = getFunction(functionChoice);
 		
-		for(int i = 0; i < 100; i++) {
+		/*for(int i = 0; i < 100; i++) {
 			
 			Swarm swarm = new Swarm(function, numberOfParticles, numberOfIterations);
-		}
+		}*/
 		//Swarm swarm = new Swarm(function, numberOfParticles, numberOfIterations);
 	}
 	

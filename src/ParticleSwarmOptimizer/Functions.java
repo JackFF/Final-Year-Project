@@ -29,7 +29,6 @@ public class Functions {
 	
 	public static double sphere(double x, double y, double z) {
 		
-		System.out.print("sphere fak");
         return Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2);
     }
 	
@@ -47,7 +46,27 @@ public class Functions {
 	
 	public static double griewank(double x, double y) {
 		
-        return 0;
+		double p1 = 1;
+		double p2 = ((1/4000) * (x*x));
+		double p3 = ((1/4000) * (y*y));
+		double p4 = p1 + p2 + p3;
+		double p5 = Math.cos(x);
+		double p6 = Math.cos((1/2) * (y) * Math.sqrt(2));
+		double p7 = p5 * p6;
+		double p8 = p4 - p7;
+		
+		return p8;
+    }
+	
+	public static double rastrigin(double x) {
+		
+		double p1 = (x*x);
+		double p2 = (10 * (Math.cos((2) * (Math.PI) * (x))));
+		double p3 = p1 - p2;
+		double p4 = 10;
+		double p5 = p3 + 10;
+		
+		return p5;
     }
 	
 	public enum FunctionChoices{
@@ -58,6 +77,7 @@ public class Functions {
 		ackleysFunction,
 		sphere,
 		rosenbrock,
-		griewank
+		griewank,
+		rastrigin
 	}
 }
