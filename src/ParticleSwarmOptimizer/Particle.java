@@ -1,5 +1,6 @@
 package ParticleSwarmOptimizer;
 
+import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 import ParticleSwarmOptimizer.Functions.FunctionChoices;
@@ -7,57 +8,45 @@ import ParticleSwarmOptimizer.Functions.FunctionChoices;
 public class Particle {
 	
 	private FunctionChoices function;
-	private Vector location;
-	private Vector velocity;
+	private ArrayList<Double> location;
+	private ArrayList<Double> velocity;
 	double minRange = 0;
 	double maxRange = 0;
-	double minVelocity = -5;
-	double maxVelocity = 6;
 	private double pBest;
-	private Vector pBestLocation;
+	private ArrayList<Double> pBestLocation;
 	int dimensions;
 
 	public Particle(FunctionChoices function, int dimensions) {
 		
 		this.function = function;
 		this.dimensions = dimensions;
-		location = new Vector(0, 0, 0);
-		velocity = new Vector(0, 0, 0);
-		pBestLocation = new Vector(0, 0, 0);
-		setInitialPosition();
+		location = setInitialPosition(dimensions);
+		//System.out.println("Initial Locations: " + location);
+		velocity = setInitial(dimensions);
+		pBestLocation = setInitial(dimensions);
 		pBest = getInitialPBest();
-		////setInitialVelocity(velocity);
-		//System.out.println("Velocity:" + velocity);
-		////updateLocation();
+		velocity = setInitialVelocity(dimensions);
 	}
 
-	private void setInitialPosition() {
+	public Particle() {
 		
-		if(function == FunctionChoices.testFunction1) {
+	}
+
+	public ArrayList<Double> setInitial(int dimensions) {
+		
+		ArrayList<Double> coords = new ArrayList<Double>();
+		
+		for(int i = 0; i < dimensions; i++) {
 			
-			minRange = -100;
-			maxRange = 100;
+			coords.add(0.0);
 		}
 		
-		else if(function == FunctionChoices.testFunction2) {
-			
-			minRange = -100;
-			maxRange = 100;
-		}
+		return coords;
+	}
+
+	private ArrayList<Double> setInitialPosition(int dimensions) {
 		
-		else if(function == FunctionChoices.boothsFunction) {
-			
-			minRange = -100;
-			maxRange = 100;
-		}
-		
-		else if(function == FunctionChoices.ackleysFunction) {
-			
-			minRange = -32;
-			maxRange = 32;
-		}
-		
-		else if(function == FunctionChoices.sphere) {
+		if(function == FunctionChoices.sphere) {
 			
 			minRange = -5.12;
 			maxRange = 5.12;
@@ -67,6 +56,12 @@ public class Particle {
 			
 			minRange = -2.048;
 			maxRange = 2.048;
+		}
+		
+		else if(function == FunctionChoices.ackley) {
+			
+			minRange = -32;
+			maxRange = 32;
 		}
 		
 		else if(function == FunctionChoices.griewank) {
@@ -81,93 +76,138 @@ public class Particle {
 			maxRange = 5.12;
 		}
 		
-		double x = ThreadLocalRandom.current().nextDouble(minRange, maxRange);
-		double y = ThreadLocalRandom.current().nextDouble(minRange, maxRange);
-		double z = ThreadLocalRandom.current().nextDouble(minRange, maxRange);
+		else if(function == FunctionChoices.schaffer2D) {
+			
+			minRange = -100;
+			maxRange = 100;
+		}
 		
-		location.setLocation(x, y, z);
+		else if(function == FunctionChoices.griewank10D) {
+			
+			minRange = -600;
+			maxRange = 600;
+		}
+		
+		ArrayList<Double> coords = new ArrayList<Double>();
+		
+		for(int i = 0; i < dimensions; i++) {
+			
+			double j = ThreadLocalRandom.current().nextDouble(minRange, maxRange);
+			
+			coords.add(j);
+		}
+		
+		return coords;
 	}
 	
+	private ArrayList<Double> setInitialVelocity(int dimensions) {
+		
+		double mnR = 0;
+		double mxR = 0;
+		
+		if(function == FunctionChoices.sphere) {
+			
+			mnR = -10.24;
+			mxR = 10.24;
+		}
+		
+		else if(function == FunctionChoices.rosenbrock) {
+			
+			mnR = -(2.048 * 2);
+			mxR = (2.048 * 2);
+		}
+		
+		else if(function == FunctionChoices.ackley) {
+			
+			mnR = -(32 * 2);
+			mxR = (32 * 2);
+		}
+		
+		else if(function == FunctionChoices.griewank) {
+			
+			mnR = -1200;
+			mxR = 1200;
+		}
+		
+		else if(function == FunctionChoices.rastrigin) {
+			
+			mnR = -(5.12 * 2);
+			mxR = (5.12 * 2);
+		}
+		
+		else if(function == FunctionChoices.schaffer2D) {
+			
+			mnR = -200;
+			mxR = 200;
+		}
+		
+		else if(function == FunctionChoices.griewank10D) {
+			
+			mnR = -1200;
+			mxR = 1200;
+		}
+		
+		ArrayList<Double> coords = new ArrayList<Double>();
+		
+		for(int i = 0; i < dimensions; i++) {
+			
+			double j = ThreadLocalRandom.current().nextDouble(mnR, mxR);
+			
+			coords.add(j);
+		}
+		
+		return coords;
+	}
+
 	private double getInitialPBest() {
 		
-		if(function == FunctionChoices.testFunction1) {
+		if(function == FunctionChoices.sphere) {
 			
 			pBestLocation = location;
-			//System.out.println("Initial x-location: " + location.getX());
-			//System.out.println(Functions.testFunction1(location.getX()));
-			return Functions.testFunction1(location.getX());
-		}
-		
-		else if(function == FunctionChoices.testFunction2) {
 			
-			pBestLocation = location;
-			return Functions.testFunction2(location.getX());
-		}
-		
-		else if(function == FunctionChoices.boothsFunction) {
-			
-			pBestLocation = location;
-			return Functions.boothsFunction(location.getX(), location.getY());
-		}
-		
-		else if(function == FunctionChoices.ackleysFunction) {
-			
-			pBestLocation = location;
-			return Functions.ackleysFunction(location.getX(), location.getY());
-		}
-		
-		else if(function == FunctionChoices.sphere) {
-			
-			pBestLocation = location;
-			return Functions.sphere(location.getX(), location.getY(), location.getZ());
+			return Functions.sphere(getLocation(), dimensions);
 		}
 		
 		else if(function == FunctionChoices.rosenbrock) {
 			
 			pBestLocation = location;
-			return Functions.rosenbrock(location.getX(), location.getY());
+			
+			return Functions.rosenbrock(getLocation(), dimensions);
+		}
+		
+		else if(function == FunctionChoices.ackley) {
+			
+			pBestLocation = location;
+			
+			return Functions.ackley(getLocation(), dimensions);
 		}
 		
 		else if(function == FunctionChoices.griewank) {
 			
-			if(dimensions == 1) {
-				
-				pBestLocation = location;
-				return Functions.griewank(location.getX());
-			}
+			pBestLocation = location;
 			
-			else if(dimensions == 2) {
-				
-				pBestLocation = location;
-				return Functions.griewank(location.getX(), location.getY());
-			}
-			
-			else {
-				
-				pBestLocation = location;
-				return Functions.griewank(location.getX(), location.getY(), location.getZ());
-			}
+			return Functions.griewank(getLocation(), dimensions);
 		}
 		
 		else if(function == FunctionChoices.rastrigin) {
 			
-			if(dimensions == 1) {
-				
-				pBestLocation = location;
-				return Functions.rastrigin(location.getX());
-			}
+			pBestLocation = location;
 			
-			else if(dimensions == 2) {
-				
-				pBestLocation = location;
-				return Functions.rastrigin(location.getX(), location.getY());
-			}
+			return Functions.rastrigin(getLocation(), dimensions);
+		}
+		
+		else if(function == FunctionChoices.schaffer2D) {
 			
-			else {
-				
-				pBestLocation = location;
-				return Functions.rastrigin(location.getX(), location.getY(), location.getZ());
-			}
+			pBestLocation = location;
+			
+			return Functions.schaffer2D(getLocation(), dimensions);
+		}
+		
+		else if(function == FunctionChoices.griewank10D) {
+			
+			pBestLocation = location;
+			
+			return Functions.griewank10D(getLocation(), dimensions);
 		}
 		
 		else {
@@ -176,79 +216,41 @@ public class Particle {
 		}
 	}
 	
-	private void setInitialVelocity(Vector velocity) {
-		
-		velocity.x = ThreadLocalRandom.current().nextDouble(minVelocity, maxVelocity);
-		velocity.y = ThreadLocalRandom.current().nextDouble(minVelocity, maxVelocity);
-		velocity.z = ThreadLocalRandom.current().nextDouble(minVelocity, maxVelocity);
-	}
-	
 	private double getFitness() {
 		
-		if(function == FunctionChoices.testFunction1) {
+		if(function == FunctionChoices.sphere) {
 			
-			return Functions.testFunction1(location.getX());
-		}
-		
-		else if(function == FunctionChoices.testFunction2) {
-			
-			return Functions.testFunction2(location.getX());
-		}
-		
-		else if(function == FunctionChoices.boothsFunction) {
-			
-			return Functions.boothsFunction(location.getX(), location.getY());
-		}
-		
-		else if(function == FunctionChoices.ackleysFunction) {
-			
-			return Functions.ackleysFunction(location.getX(), location.getY());
-		}
-		
-		else if(function == FunctionChoices.sphere) {
-			
-			return Functions.sphere(location.getX(), location.getY(), location.getZ());
+			return Functions.sphere(getLocation(), dimensions);
 		}
 		
 		else if(function == FunctionChoices.rosenbrock) {
 			
-			return Functions.rosenbrock(location.getX(), location.getY());
+			return Functions.rosenbrock(getLocation(), dimensions);
+		}
+		
+		else if(function == FunctionChoices.ackley) {
+			
+			return Functions.ackley(getLocation(), dimensions);
 		}
 		
 		else if(function == FunctionChoices.griewank) {
 			
-			if(dimensions == 1) {
-				
-				return Functions.griewank(location.getX());
-			}
-			
-			else if(dimensions == 2) {
-				
-				return Functions.griewank(location.getX(), location.getY());
-			}
-			
-			else {
-				
-				return Functions.griewank(location.getX(), location.getY(), location.getZ());
-			}
+			return Functions.griewank(getLocation(), dimensions);
 		}
 		
 		else if(function == FunctionChoices.rastrigin) {
 			
-			if(dimensions == 1) {
-				
-				return Functions.rastrigin(location.getX());
-			}
+			return Functions.rastrigin(getLocation(), dimensions);
+		}
+		
+		else if(function == FunctionChoices.schaffer2D) {
 			
-			else if(dimensions == 2) {
-				
-				return Functions.rastrigin(location.getX(), location.getY());
-			}
+			return Functions.schaffer2D(getLocation(), dimensions);
+		}
+		
+		else if(function == FunctionChoices.griewank10D) {
 			
-			else {
-				
-				return Functions.rastrigin(location.getX(), location.getY(), location.getZ());
-			}
+			return Functions.griewank10D(getLocation(), dimensions);
 		}
 		
 		else {
@@ -261,6 +263,8 @@ public class Particle {
 		
 		double currentFitness = getFitness();
 		
+		//System.out.println(currentFitness);
+		
 		if(currentFitness < particle.getPBest()) {
 			
 			pBest = currentFitness;
@@ -271,9 +275,14 @@ public class Particle {
 		}
 	}
 	
-	private void updatePBestLocation(Vector location) {
+	private void updatePBestLocation(ArrayList<Double> arrayList) {
 		
-		this.pBestLocation = location.clone();
+		this.pBestLocation = clone(arrayList);
+	}
+	
+	public ArrayList<Double> clone(ArrayList<Double> arrayList) {
+		
+		return new ArrayList<Double>(arrayList);
 	}
 	
 	public double getPBest() {
@@ -281,28 +290,38 @@ public class Particle {
 		return pBest;
 	}
 	
-	public Vector getPBestLocation() {
+	public ArrayList<Double> getPBestLocation() {
 		
 		return pBestLocation;
 	}
 
-	public Vector getLocation() {
+	public ArrayList<Double> getLocation() {
 		
 		return location;
 	}
 
-	public Vector getVelocity() {
+	public ArrayList<Double> getVelocity() {
 		
 		return velocity;
 	}
 
-	public void setVelocity(Vector velocity) {
+	public void setVelocity(ArrayList<Double> velocity) {
 		
 		this.velocity = velocity;
 	}
 
-	public void updateLocation() {
+	public double getMaxRange() {
 		
-		this.location.add(velocity);
+		return maxRange;
+	}
+
+	public double getMinRange() {
+
+		return minRange;
+	}
+
+	public void setLocation(ArrayList<Double> location) {
+		
+		this.location = location;
 	}
 }

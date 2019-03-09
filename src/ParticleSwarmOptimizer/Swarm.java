@@ -13,15 +13,13 @@ public class Swarm {
 	int dimensions;
 	ArrayList<Particle> particles;
 	double gBest = Double.POSITIVE_INFINITY;
-	Vector gBestLocation = new Vector(0, 0, 0);
-	double inertia = 0.729844;
-	double social = 1.496180;
-	//double inertiaTest = 0.36;
-	//double socialTest = 0.75;
+	ArrayList<Double> gBestLocation;
+	double social = 2.05;
 	Exporter exp = new Exporter();
 	boolean check;
+	Particle particle = new Particle();
 	
-	Vector realGBestLocation;
+	ArrayList<Double> realGBestLocation;
 
 	public Swarm(FunctionChoices function, int numberOfParticles, int numberOfIterations, int dimensions) {
 		
@@ -30,7 +28,7 @@ public class Swarm {
 		this.numberOfIterations = numberOfIterations;
 		this.dimensions = dimensions;
 		particles = new ArrayList<Particle>();
-		gBestLocation = new Vector(0, 0, 0);
+		gBestLocation = particle.setInitial(dimensions);
 		execute();
 	}
 
@@ -47,52 +45,16 @@ public class Swarm {
 		
 		
 		double oldGBest = gBest;
-		
-		if(dimensions == 1) {
 			
-			System.out.println("--------------------------Beginning Optimization-------------------------");
-            System.out.println("Global Best Value at Iteration " + 0 + ":\t"  + gBest);
-            System.out.println("Global Best Location at Iteration " + 0 + ":\t" + "X: " + gBestLocation.getX() + "\n");
-		}
-		
-		else if(dimensions == 2) {
-			
-			System.out.println("--------------------------Beginning Optimization-------------------------");
-            System.out.println("Global Best Value at Iteration " + 0 + ":\t"  + gBest);
-            System.out.println("Global Best Location at Iteration " + 0 + ":\t" + "X: " + gBestLocation.getX() + " Y: " + gBestLocation.getY() + "\n");
-		}
-		
-		else if(dimensions == 3) {
-			
-			System.out.println("--------------------------Beginning Optimization-------------------------");
-            System.out.println("Global Best Value at Iteration " + 0 + ":\t"  + gBest);
-            System.out.println("Global Best Location at Iteration " + 0 + ":\t" + "X: " + gBestLocation.getX() + " Y: " + gBestLocation.getY() + " Z: " + gBestLocation.getZ() + "\n");
-		}
+		System.out.println("--------------------------Beginning Optimization-------------------------");
+        System.out.println("Global Best Value at Iteration " + 0 + ":\t"  + gBest);
+        System.out.println("Global Best Location at Iteration " + 0 + ":\t" + "Coords: " + gBestLocation + "\n");
 		
 		for(int i = 0; i < numberOfIterations; i++) {
 			
-			//updatePrintout();
 			if(gBest < oldGBest) {
 				
 				check = true;
-				
-				/*if(dimensions == 1) {
-					
-					System.out.println("Global Best Value at Iteration " + (i + 1) + ":\t"  + gBest);
-	                System.out.println("Global Best Location at Iteration " + (i + 1) + ":\t" + "X: " + gBestLocation.getX() + "\n");
-				}
-				
-				else if(dimensions == 2) {
-					
-					System.out.println("Global Best Value at Iteration " + (i + 1) + ":\t"  + gBest);
-	                System.out.println("Global Best Location at Iteration " + (i + 1) + ":\t" + "X: " + gBestLocation.getX() + " Y: " + gBestLocation.getY() + "\n");
-				}
-				
-				else if(dimensions == 3) {
-					
-					System.out.println("Global Best Value at Iteration " + (i + 1) + ":\t"  + gBest);
-	                System.out.println("Global Best Location at Iteration " + (i + 1) + ":\t" + "X: " + gBestLocation.getX() + " Y: " + gBestLocation.getY() + " Z: " + gBestLocation.getZ() + "\n");
-				}*/
 				
                 oldGBest = gBest;
 			}
@@ -119,63 +81,26 @@ public class Swarm {
 				//System.out.println("Particle " + j);
 				//System.out.println("Particle " + j + " Old position: " + particles.get(j).getLocation());
 				updateVelocity(particles.get(j));
-				particles.get(j).updateLocation();
 				//System.out.println("Particle " + j + " New position: " + particles.get(j).getLocation());
-				
 				updateGBest(particles.get(j));
 			}
 			
-			updatePrintout(i, check);
+			//updatePrintout(i, check);
 		}
 		
 		System.out.println("---------------------------RESULT---------------------------");
-		
-		if(dimensions == 1) {
 			
-			System.out.println("X: " + gBestLocation.getX());
-		    System.out.println("Final Best Evaluation: " + gBest);
-		    exp.export(gBest, gBestLocation.getX(), gBestLocation.getY(), gBestLocation.getZ(), function, numberOfParticles, numberOfIterations, dimensions);
-		}
-		
-		else if(dimensions == 2) {
-			
-			System.out.println("X: " + gBestLocation.getX());
-			System.out.println("Y: " + gBestLocation.getY());
-		    System.out.println("Final Best Evaluation: " + gBest);
-		    exp.export(gBest, gBestLocation.getX(), gBestLocation.getY(), gBestLocation.getZ(), function, numberOfParticles, numberOfIterations, dimensions);
-		}
-		
-		else if(dimensions == 3) {
-			
-			System.out.println("X: " + gBestLocation.getX());
-			System.out.println("Y: " + gBestLocation.getY());
-			System.out.println("Z: " + gBestLocation.getZ());
-		    System.out.println("Final Best Evaluation: " + gBest);
-		    exp.export(gBest, gBestLocation.getX(), gBestLocation.getY(), gBestLocation.getZ(), function, numberOfParticles, numberOfIterations, dimensions);
-		}
+		System.out.println("Coords: " + gBestLocation);
+		System.out.println("Final Best Evaluation: " + gBest);
+		exp.export(gBest, gBestLocation, function, numberOfParticles, numberOfIterations, dimensions);
 	}
 
 	private void updatePrintout(int i, boolean check) {
 		
 		if(check == true) {
-			
-			if(dimensions == 1) {
 				
-				System.out.println("Global Best Value at Iteration " + (i + 1) + ":\t"  + gBest);
-	        	System.out.println("Global Best Location at Iteration " + (i + 1) + ":\t" + "X: " + gBestLocation.getX() + "\n");
-			}
-		
-			else if(dimensions == 2) {
-			
-				System.out.println("Global Best Value at Iteration " + (i + 1) + ":\t"  + gBest);
-				System.out.println("Global Best Location at Iteration " + (i + 1) + ":\t" + "X: " + gBestLocation.getX() + " Y: " + gBestLocation.getY() + "\n");
-			}
-		
-			else if(dimensions == 3) {
-			
-				System.out.println("Global Best Value at Iteration " + (i + 1) + ":\t"  + gBest);
-				System.out.println("Global Best Location at Iteration " + (i + 1) + ":\t" + "X: " + gBestLocation.getX() + " Y: " + gBestLocation.getY() + " Z: " + gBestLocation.getZ() + "\n");
-			}
+			System.out.println("Global Best Value at Iteration " + (i + 1) + ":\t"  + gBest);
+			System.out.println("Global Best Location at Iteration " + (i + 1) + ":\t" + "Coords: " + gBestLocation + "\n");
 		}
 	}
 
@@ -189,83 +114,109 @@ public class Swarm {
 			//System.out.println("Particles Best Location: " + particle.getPBestLocation());
 			//System.out.println("New gBest Location: " + gBestLocation);
 			
-			realGBestLocation = gBestLocation.clone();
+			realGBestLocation = particle.clone(gBestLocation);
 		}
 	}
 	
 	private void updateVelocity(Particle particle) {
 		
-		/*Vector oldVelocity = particle.getVelocity();
-		Vector pBest = particle.getPBestLocation();
-		System.out.println("pBest: " + pBest);
-		Vector gBest = gBestLocation;
-		Vector currentLocation1 = particle.getLocation();
-		Vector currentLocation2 = particle.getLocation();
-		System.out.println("cL1: " + currentLocation1);
-		System.out.println("cL2: " + currentLocation2);*/
+		ArrayList<Double> oV = particle.getVelocity();
+		//System.out.println("oV: " + oV);
+		ArrayList<Double> oldVelocity = particle.clone(oV);
+		//System.out.println("oldVelocity: " + oldVelocity);
 		
-		Vector oV = particle.getVelocity();
-		Vector oldVelocity = oV.clone();
-		
-		Vector pB = particle.getPBestLocation();
-		Vector pBest = pB.clone();
+		ArrayList<Double> pB = particle.getPBestLocation();
+		//System.out.println("pB: " + pB);
+		ArrayList<Double> pBest = particle.clone(pB);
 		//System.out.println("pBest: " + pBest);
 		
-		Vector gB = gBestLocation;
-		Vector gBest = gB.clone();
+		ArrayList<Double> gB = gBestLocation;
+		//System.out.println("gB: " + gB);
+		ArrayList<Double> gBest = particle.clone(gB);
+		//System.out.println("gBest: " + gBest);
 		
-		Vector cL1 = particle.getLocation();
-		Vector currentLocation1 = cL1.clone();
+		ArrayList<Double> cL1 = particle.getLocation();
+		//System.out.println("cL1: " + cL1);
+		ArrayList<Double> currentLocation1 = particle.clone(cL1);
+		//System.out.println("currentLocation1: " + currentLocation1);
 		
-		Vector cL2 = particle.getLocation();
-		Vector currentLocation2 = cL2.clone();
+		ArrayList<Double> cL2 = particle.getLocation();
+		//System.out.println("cL2: " + cL2);
+		ArrayList<Double> currentLocation2 = particle.clone(cL2);
+		//System.out.println("currentLocation2: " + currentLocation2);
 		
-		//System.out.println("cL1: " + currentLocation1);
-		////System.out.println("cL2: " + currentLocation2);
+		ArrayList<Double> cL3 = particle.getLocation();
+		//System.out.println("cL3: " + cL3);
+		ArrayList<Double> currentLocation3 = particle.clone(cL3);
+		//System.out.println("currentLocation3: " + currentLocation3);
 		
 		Random random = new Random();
 		double r1 = random.nextDouble();
 		double r2 = random.nextDouble();
 		
+		double maxRange = particle.getMaxRange();
+		double minRange = particle.getMinRange();
+		
 		//System.out.println("r1: " + r1);
 		//System.out.println("r2: " + r2);
 		
-		Vector newVelocity = oldVelocity;
-		////System.out.println("Old Velocity: " + oldVelocity);
-		////System.out.println("Old Velocity Clone: " + newVelocity);
-		newVelocity.multiply(inertia);
-		////System.out.println("New Velocity1: " + newVelocity);
+		ArrayList<Double> newVelocity = particle.clone(oldVelocity);
 		
-		////System.out.println("Cl b4 - pBest: " + currentLocation1);
-		//System.out.println("pBest: b4" + pBest);
-		pBest.subtract(currentLocation1);
-		//currentLocation = particle.getLocation();
-		////System.out.println("pBest: a4" + pBest);
-		////System.out.println("Cl a4 - pBest: " + currentLocation1);
-		//Vector test = particle.getLocation();
-		////System.out.println("Test " + test);
-		//System.out.println("pBest b4 social: " + pBest);
-		pBest.multiply(social);
-		//System.out.println("pBest b4 r1: " + pBest);
-		pBest.multiply(r1);
-		//System.out.println("pBest a4 r1: " + pBest);
-		newVelocity.add(pBest);
-		////System.out.println("pBest: " + pBest);
-		////System.out.println("New Velocity2: " + newVelocity);
+		for(int i = 0; i < dimensions; i++) {
+			
+			double previousVelocity = newVelocity.get(i);
+			
+			double t1 = (r1 * social * (pBest.get(i) - currentLocation1.get(i)));
+			double t2 = (r2 * social * (gBest.get(i) - currentLocation2.get(i)));
+			
+			double newVel = 0.7298437881 * (previousVelocity + t1 + t2);
+			
+			newVelocity.set(i, newVel);
+		}
 		
-		////System.out.println("gBestOrig: " + gBestLocation);
-		////System.out.println("gBestFake: " + gBest);
-		gBest.subtract(currentLocation2);
-		////System.out.println("Cl: " + currentLocation2);
-		////System.out.println("gBest - Cl: " + gBest);
-		gBest.multiply(social);
-		////System.out.println("gBest * sT: " + gBest);
-		gBest.multiply(r2);
-		////System.out.println("gBest * r2: " + gBest);
-		////System.out.println("New Velocity b4 add gBest: " + newVelocity);
-		newVelocity.add(gBest);
-		////System.out.println("New Velocity3: " + newVelocity);
+		for(int i = 0; i < dimensions; i++) {
+			
+			if(newVelocity.get(i) > (maxRange)) {
+				
+				newVelocity.set(i, maxRange);
+			}
+			
+			else if(newVelocity.get(i) < 0 - maxRange) {
+				
+				newVelocity.set(i, 0 - maxRange);
+			}
+		}
+		
+		for(int i = 0; i < dimensions; i++) {
+			
+			if(currentLocation3.get(i) + newVelocity.get(i) > maxRange) {
+				
+				double newPos = maxRange - (currentLocation3.get(i) + newVelocity.get(i) - maxRange);
+				currentLocation3.set(i, newPos);
+				
+				double newVel = 0 - newVelocity.get(i);
+				newVelocity.set(i, newVel);
+			}
+			
+			else if(currentLocation3.get(i) + newVelocity.get(i) < maxRange) {
+				
+				double newPos = maxRange + ((-maxRange) - (currentLocation3.get(i) + newVelocity.get(i)));
+				currentLocation3.set(i, newPos);
+				
+				double newVel = 0 - newVelocity.get(i);
+				newVelocity.set(i, newVel);
+			}
+			
+			else {
+				
+				double newPos = currentLocation3.get(i) + newVelocity.get(i); // particle is within acceptable region											
+				currentLocation3.set(i, newPos);
+			}
+		}
+		
+		//System.out.println("new currentLocation3: " + currentLocation3);
 		
 		particle.setVelocity(newVelocity);
+		particle.setLocation(currentLocation3);	
 	}
 }

@@ -140,41 +140,41 @@ public class GUI extends JFrame {
 		
 		if(choice == 0) {
 			
-			return Functions.FunctionChoices.testFunction1;
-		}
-		else if(choice == 1) {
-			
-			return Functions.FunctionChoices.testFunction2;
-		}
-		
-		else if(choice == 2) {
-			
-			return Functions.FunctionChoices.boothsFunction;
-		}
-		
-		else if(choice == 3) {
-			
-			return Functions.FunctionChoices.ackleysFunction;
-		}
-		
-		else if(choice == 4) {
-			
 			return Functions.FunctionChoices.sphere;
 		}
-		
-		else if(choice == 5) {
+		else if(choice == 1) {
 			
 			return Functions.FunctionChoices.rosenbrock;
 		}
 		
-		else if(choice == 6) {
+		else if(choice == 2) {
+			
+			return Functions.FunctionChoices.ackley;
+		}
+		
+		else if(choice == 3) {
 			
 			return Functions.FunctionChoices.griewank;
 		}
 		
+		else if(choice == 4) {
+			
+			return Functions.FunctionChoices.rastrigin;
+		}
+		
+		else if(choice == 5) {
+			
+			return Functions.FunctionChoices.schaffer2D;
+		}
+		
+		else if(choice == 6) {
+			
+			return Functions.FunctionChoices.griewank10D;
+		}
+		
 		else {
 			
-			return Functions.FunctionChoices.testFunction1;
+			return Functions.FunctionChoices.sphere;
 		}
 	}
 }

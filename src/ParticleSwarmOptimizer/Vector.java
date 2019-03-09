@@ -1,59 +1,26 @@
 package ParticleSwarmOptimizer;
 
+import java.util.ArrayList;
+
 public class Vector {
 	
-	double x, y, z;
-
-	public Vector(double x, double y, double z) {
-		
-		this.x = x;
-		this.y = y;
-		this.z = z;
-	}
-
-	public void setLocation(double x, double y, double z) {
-		
-		setX(x);
-		setY(y);
-		setZ(z);
-	}
-
-	private void setX(double x) {
-		
-		this.x = x;
-	}
+	int dimensions;
+	ArrayList<Double> coords;
 	
-	private void setY(double y) {
+	public Vector(int dimensions) {
 		
-		this.y = y;
+		this.dimensions = dimensions;
+		coords = new ArrayList<Double>();
+		
+		for(int i = 0; i < dimensions; i++) {
+			
+			coords.add(0.0);
+		}
+		
+		//System.out.println(coords.get(0));
 	}
 
-	private void setZ(double z) {
-	
-		this.z = z;
-	}
-	
-	public String toString() {
-		
-		return "x: " + x + " Y: " + y + " Z: " + z;
-	}
-
-	public double getX() {
-		
-		return x;
-	}
-	
-	public double getY() {
-		
-		return y;
-	}
-
-	public double getZ() {
-		
-		return z;
-	}
-
-	public void multiply(double d) {
+	/*public void multiply(double d) {
 		
 		x *= d;
 		y *= d;
@@ -72,10 +39,20 @@ public class Vector {
 		x = x + v.getX();
 		y = y + v.getY();
 		z = z + v.getZ();
-	}
+	}*/
 	
+	public Vector(ArrayList<Double> coordsClone) {
+		
+		coordsClone = coords;
+	}
+
 	public Vector clone() {
 		
-		return new Vector(x, y, z);
+		return new Vector(coords);
+	}
+
+	public void addLocation(ArrayList<Double> coords) {
+		
+		this.coords = coords;
 	}
 }
