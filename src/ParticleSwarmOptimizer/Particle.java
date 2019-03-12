@@ -26,6 +26,10 @@ public class Particle {
 		pBest = getInitialPBest();
 		velocity = setInitialVelocity(dimensions);
 	}
+	
+	public Particle() {
+		
+	}
 
 	public ArrayList<Double> setInitial(int dimensions) {
 		
