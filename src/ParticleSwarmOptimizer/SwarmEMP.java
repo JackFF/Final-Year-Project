@@ -1,35 +1,38 @@
 package ParticleSwarmOptimizer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 import ParticleSwarmOptimizer.Functions.FunctionChoices;
 
-public class Swarm {
+public class SwarmEMP {
 	
 	FunctionChoices function;
 	int numberOfParticles;
 	int numberOfIterations;
 	int dimensions;
-	ArrayList<Particle> particles;
+	ArrayList<ParticleEMP> particles;
 	double gBest = Double.POSITIVE_INFINITY;
 	ArrayList<Double> gBestLocation;
 	double social = 2.05;
 	Exporter exp = new Exporter();
 	boolean check;
-	Particle particle = new Particle();
+	ParticleEMP particle = new ParticleEMP();
+	int memory;
 	ArrayList<Double> gBestValues;
 	ArrayList<Integer> iterations;
 	
 	ArrayList<Double> realGBestLocation;
 
-	public Swarm(FunctionChoices function, int numberOfParticles, int numberOfIterations, int dimensions) {
+	public SwarmEMP(FunctionChoices function, int numberOfParticles, int numberOfIterations, int dimensions, int memory) {
 		
 		this.function = function;
 		this.numberOfParticles = numberOfParticles;
 		this.numberOfIterations = numberOfIterations;
 		this.dimensions = dimensions;
-		particles = new ArrayList<Particle>();
+		this.memory = memory;
+		particles = new ArrayList<ParticleEMP>();
 		gBestLocation = particle.setInitial(dimensions);
 		gBestValues = new ArrayList<Double>();
 		iterations = new ArrayList<Integer>();
@@ -42,7 +45,7 @@ public class Swarm {
 		
 		for(int i = 0; i < numberOfParticles; i++) {
 			
-			Particle particle = new Particle(function, dimensions);
+			ParticleEMP particle = new ParticleEMP(function, dimensions, memory);
 			particles.add(particle);
 			updateGBest(particle);
 		}
@@ -53,10 +56,12 @@ public class Swarm {
 		System.out.println("--------------------------Beginning Optimization-------------------------");
         System.out.println("Global Best Value at Iteration " + 0 + ":\t"  + gBest);
         System.out.println("Global Best Location at Iteration " + 0 + ":\t" + "Coords: " + gBestLocation + "\n");
-        
+		
         gBestValues.add(gBest);
 		iterations.add(0);
-		
+		//System.out.println("gbv: " + gBestValues);
+		//System.out.println("iterations: " + iterations);
+        
 		for(int i = 0; i < numberOfIterations; i++) {
 			
 			if(gBest < oldGBest) {
@@ -75,6 +80,7 @@ public class Swarm {
 			for(int j = 0; j < particles.size(); j++) {
 				
 				//System.out.println("old pBest = " + particles.get(j).getPBest());
+				particles.get(j).updatePreviousPositions(particles.get(j));
 				particles.get(j).updatePBest(particles.get(j));
 				//System.out.println("new pBest = " + particles.get(j).getPBest());
 				//System.out.println("old gBest: " + gBest);
@@ -114,10 +120,12 @@ public class Swarm {
 			
 			gBestValues.add(value);
 			iterations.add(i + 1);
+			//System.out.println("gbv: " + gBestValues);
+			//System.out.println("iterations: " + iterations);
 		}
 	}
 
-	private void updateGBest(Particle particle) {
+	private void updateGBest(ParticleEMP particle) {
 		
 		if(particle.getPBest() < gBest) {
 			
@@ -131,12 +139,58 @@ public class Swarm {
 		}
 	}
 	
-	private void updateVelocity(Particle particle) {
+	private void updateVelocity(ParticleEMP particle) {
+		
+		//particle.cutPreviousPositions(particle);
+		
+		ArrayList<Double> chance = new ArrayList<Double>();
+		
+		for(int i = 0; i < memory; i++) {
+			
+			chance.add((Math.pow(2, i-1) / (Math.pow(2, memory-1) - 1)));
+		}
+		
+		Random rand = new Random();
+		
+		int choice = selectRandomWeighted(chance, rand);
+		
+		//System.out.println("Choices: " + chance);
+		//System.out.println("Choice: " + choice);
 		
 		ArrayList<Double> oV = particle.getVelocity();
 		//System.out.println("oV: " + oV);
 		ArrayList<Double> oldVelocity = particle.clone(oV);
 		//System.out.println("oldVelocity: " + oldVelocity);
+		
+		ArrayList<Double> y1 = new ArrayList<Double>();
+		
+		particle.sortTest(particle);
+		
+		particle.cutPreviousPositions(particle);
+		
+		ArrayList<Double> pBestAttempts = particle.getpBestAttempts();
+		ArrayList<ArrayList<Double>> listOfPBest = particle.getlistOfpBest();
+		
+		//System.out.println("pBest Attempts b4: " + pBestAttempts);
+		//System.out.println("list of pBest loc b4: " + listOfPBest);
+		
+		Collections.reverse(pBestAttempts);
+		Collections.reverse(listOfPBest);
+		
+		////System.out.println("pBest Attempts a4: " + pBestAttempts);
+		//System.out.println("list of pBest loc a4: " + listOfPBest);
+		
+		if(listOfPBest.size() == 1) {
+			
+			y1 = listOfPBest.get(0);
+			//System.out.println("if y1: " + y1);
+		}
+		
+		else {
+			
+			y1 = listOfPBest.get(choice);
+			//System.out.println("else y1: " + y1);
+		}
 		
 		ArrayList<Double> pB = particle.getPBestLocation();
 		//System.out.println("pB: " + pB);
@@ -168,7 +222,6 @@ public class Swarm {
 		double r2 = random.nextDouble();
 		
 		double maxRange = particle.getMaxRange();
-		double minRange = particle.getMinRange();
 		
 		//System.out.println("r1: " + r1);
 		//System.out.println("r2: " + r2);
@@ -176,60 +229,80 @@ public class Swarm {
 		ArrayList<Double> newVelocity = particle.clone(oldVelocity);
 		
 		for(int i = 0; i < dimensions; i++) {
-			
+		
 			double previousVelocity = newVelocity.get(i);
-			
-			double t1 = (r1 * social * (pBest.get(i) - currentLocation1.get(i)));
+		
+			double t1 = (r1 * social * (y1.get(i) - currentLocation1.get(i)));
 			double t2 = (r2 * social * (gBest.get(i) - currentLocation2.get(i)));
-			
+		
 			double newVel = 0.7298437881 * (previousVelocity + t1 + t2);
-			
+		
 			newVelocity.set(i, newVel);
 		}
-		
+	
 		for(int i = 0; i < dimensions; i++) {
-			
+		
 			if(newVelocity.get(i) > (maxRange)) {
-				
-				newVelocity.set(i, maxRange);
-			}
 			
+					newVelocity.set(i, maxRange);
+				}
+		
 			else if(newVelocity.get(i) < 0 - maxRange) {
-				
+			
 				newVelocity.set(i, 0 - maxRange);
 			}
 		}
-		
+	
 		for(int i = 0; i < dimensions; i++) {
-			
+		
 			if(currentLocation3.get(i) + newVelocity.get(i) > maxRange) {
-				
+			
 				double newPos = maxRange - (currentLocation3.get(i) + newVelocity.get(i) - maxRange);
 				currentLocation3.set(i, newPos);
-				
+			
 				double newVel = 0 - newVelocity.get(i);
 				newVelocity.set(i, newVel);
 			}
-			
+		
 			else if(currentLocation3.get(i) + newVelocity.get(i) < maxRange) {
-				
+			
 				double newPos = maxRange + ((-maxRange) - (currentLocation3.get(i) + newVelocity.get(i)));
 				currentLocation3.set(i, newPos);
-				
+			
 				double newVel = 0 - newVelocity.get(i);
 				newVelocity.set(i, newVel);
 			}
-			
+		
 			else {
-				
-				double newPos = currentLocation3.get(i) + newVelocity.get(i); // particle is within acceptable region											
+			
+				double newPos = currentLocation3.get(i) + newVelocity.get(i);
 				currentLocation3.set(i, newPos);
 			}
 		}
-		
+	
 		//System.out.println("new currentLocation3: " + currentLocation3);
-		
+	
 		particle.setVelocity(newVelocity);
-		particle.setLocation(currentLocation3);	
+		particle.setLocation(currentLocation3);
+		
+	}
+
+	private static int selectRandomWeighted(ArrayList<Double> chance, Random rand) {
+		
+		int selected = 0;
+		double total = chance.get(0);
+		
+		for(int i = 1; i < chance.size(); i++) {
+			
+			double x = chance.get(i);
+			total += x;
+			
+			if(rand.nextDouble() <= (x / total)) {
+				
+				selected = i;
+			}
+		}
+		
+		return selected;
 	}
 }

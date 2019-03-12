@@ -5,31 +5,33 @@ import java.util.Random;
 
 import ParticleSwarmOptimizer.Functions.FunctionChoices;
 
-public class Swarm {
+public class SwarmAWL {
 	
 	FunctionChoices function;
 	int numberOfParticles;
 	int numberOfIterations;
 	int dimensions;
-	ArrayList<Particle> particles;
+	ArrayList<ParticleAWL> particles;
 	double gBest = Double.POSITIVE_INFINITY;
+	double gWorst = Double.NEGATIVE_INFINITY;
 	ArrayList<Double> gBestLocation;
+	ArrayList<Double> gWorstLocation;
 	double social = 2.05;
 	Exporter exp = new Exporter();
 	boolean check;
-	Particle particle = new Particle();
+	ParticleAWL particle = new ParticleAWL();
 	ArrayList<Double> gBestValues;
 	ArrayList<Integer> iterations;
 	
 	ArrayList<Double> realGBestLocation;
 
-	public Swarm(FunctionChoices function, int numberOfParticles, int numberOfIterations, int dimensions) {
+	public SwarmAWL(FunctionChoices function, int numberOfParticles, int numberOfIterations, int dimensions) {
 		
 		this.function = function;
 		this.numberOfParticles = numberOfParticles;
 		this.numberOfIterations = numberOfIterations;
 		this.dimensions = dimensions;
-		particles = new ArrayList<Particle>();
+		particles = new ArrayList<ParticleAWL>();
 		gBestLocation = particle.setInitial(dimensions);
 		gBestValues = new ArrayList<Double>();
 		iterations = new ArrayList<Integer>();
@@ -42,13 +44,15 @@ public class Swarm {
 		
 		for(int i = 0; i < numberOfParticles; i++) {
 			
-			Particle particle = new Particle(function, dimensions);
+			ParticleAWL particle = new ParticleAWL(function, dimensions);
 			particles.add(particle);
 			updateGBest(particle);
+			updateGWorst(particle);
 		}
 		
 		
 		double oldGBest = gBest;
+		double oldGWorst = gWorst;
 			
 		System.out.println("--------------------------Beginning Optimization-------------------------");
         System.out.println("Global Best Value at Iteration " + 0 + ":\t"  + gBest);
@@ -71,6 +75,11 @@ public class Swarm {
 				check = false;
 			}
 			
+			if(gWorst > oldGWorst) {
+				
+				oldGWorst = gWorst;
+			}
+			
 			
 			for(int j = 0; j < particles.size(); j++) {
 				
@@ -80,6 +89,7 @@ public class Swarm {
 				//System.out.println("old gBest: " + gBest);
 				updateGBest(particles.get(j));
 				//System.out.println("new gBest: " + gBest);
+				updateGWorst(particles.get(j));
 			}
 			
 			
@@ -90,6 +100,7 @@ public class Swarm {
 				updateVelocity(particles.get(j));
 				//System.out.println("Particle " + j + " New position: " + particles.get(j).getLocation());
 				updateGBest(particles.get(j));
+				updateGWorst(particles.get(j));
 			}
 			
 			updatePrintout(i, check);
@@ -117,7 +128,7 @@ public class Swarm {
 		}
 	}
 
-	private void updateGBest(Particle particle) {
+	private void updateGBest(ParticleAWL particle) {
 		
 		if(particle.getPBest() < gBest) {
 			
@@ -131,7 +142,21 @@ public class Swarm {
 		}
 	}
 	
-	private void updateVelocity(Particle particle) {
+	private void updateGWorst(ParticleAWL particle) {
+		
+		if(particle.getPWorst() > gWorst) {
+			
+			gWorst = particle.getPWorst();
+			//System.out.println("New gBest: " + gBest);
+			gWorstLocation = particle.getPWorstLocation();
+			//System.out.println("Particles Best Location: " + particle.getPBestLocation());
+			//System.out.println("New gBest Location: " + gBestLocation);
+			
+			//realGBestLocation = particle.clone(gBestLocation);
+		}
+	}
+	
+	private void updateVelocity(ParticleAWL particle) {
 		
 		ArrayList<Double> oV = particle.getVelocity();
 		//System.out.println("oV: " + oV);

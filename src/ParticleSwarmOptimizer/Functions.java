@@ -51,7 +51,7 @@ public class Functions {
 			p2 = p2 + Math.cos(2 * Math.PI * x);
 		}
 		
-		p3 = -(20*Math.exp(-0.2 * Math.sqrt(p1 / dimensions))) - (Math.exp(p2 / dimensions)) + 20 + (Math.E);
+		p3 = -(20 * Math.exp(-0.2 * Math.sqrt(p1 / dimensions))) - (Math.exp(p2 / dimensions)) + 20 + (Math.E);
 		
 		return p3;
 	}
