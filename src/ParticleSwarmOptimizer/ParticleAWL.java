@@ -290,12 +290,12 @@ public class ParticleAWL {
 		
 		double currentFitness = getFitness();
 		
-		//System.out.println(currentFitness);
+		//System.out.println("cF: " + currentFitness);
 		
 		if(currentFitness > particle.getPWorst()) {
 			
 			pWorst = currentFitness;
-			//System.out.println("pBest Ori: " + pBest);
+			//System.out.println("pWorst: " + pWorst);
 			//pBestLocation = particle.getLocation();
 			//System.out.println("pBest Ori Loc: " + pBestLocation);
 			particle.updatePWorstLocation(particle.getLocation());

@@ -11,9 +11,6 @@ public class ParticleEMP {
 	private FunctionChoices function;
 	private ArrayList<Double> location;
 	private ArrayList<Double> velocity;
-	private ArrayList<Object> previousPositions;
-	private ArrayList<ArrayList<Double>> listOfLists;
-	private ArrayList<Double> previousPositionsValues;
 	double minRange = 0;
 	double maxRange = 0;
 	private double pBest;
@@ -30,21 +27,12 @@ public class ParticleEMP {
 		this.dimensions = dimensions;
 		this.memory = memory;
 		location = setInitialPosition(dimensions);
-		//System.out.println("Initial Locations: " + location);
 		velocity = setInitial(dimensions);
-		previousPositions = new ArrayList<Object>();
-		previousPositionsValues = new ArrayList<Double>();
-		listOfLists = new ArrayList<ArrayList<Double>>();
-		//System.out.println("pp: " + previousPositions);
 		pBestLocation = setInitial(dimensions);
 		pBest = getInitialPBest();
 		velocity = setInitialVelocity(dimensions);
-		
 		listOfpBest = new ArrayList<ArrayList<Double>>();
-		//listOfpBest.add(location);
-		double x = pBest;
 		allPBestAttempts = new ArrayList<Double>();
-		//allPBestAttempts.add(x);
 	}
 
 	public ParticleEMP() {
@@ -184,10 +172,6 @@ public class ParticleEMP {
 			
 			pBestLocation = location;
 			
-			//System.out.println("location: " + location);
-			
-			//listOfpBest.add(location);
-			
 			return Functions.sphere(getLocation(), dimensions);
 		}
 		
@@ -285,31 +269,17 @@ public class ParticleEMP {
 	public void updatePBest(ParticleEMP particle) {
 		
 		double currentFitness = getFitness();
-		particle.previousPositionsValues.add(currentFitness);
-		particle.sortPreviousPositions(particle);
 		
 		particle.allPBestAttempts.add(currentFitness);
 		particle.listOfpBest.add(particle.getLocation());
 		
 		//System.out.println(currentFitness);
-		//System.out.println(particle.previousPositionsValues);
-		//System.out.println(particle.previousPositions);
 		
 		if(currentFitness < particle.getPBest()) {
 			
 			pBest = currentFitness;
 			particle.updatePBestLocation(particle.getLocation());
-			////previousPositions.add(0, particle.getLocation());
 		}
-	}
-	
-	public void updatePreviousPositions(ParticleEMP particleEMP) {
-		
-		particleEMP.previousPositions.add(particleEMP.getLocation());
-		//System.out.println("pp: " + particleEMP.previousPositions);
-		
-		particleEMP.listOfLists.add(particleEMP.getLocation());
-		//System.out.println("lol: " + particleEMP.listOfLists);
 	}
 	
 	private void updatePBestLocation(ArrayList<Double> arrayList) {
@@ -361,26 +331,6 @@ public class ParticleEMP {
 		
 		this.location = location;
 	}
-
-	public void sortPreviousPositions(ParticleEMP particle) {
-		
-		for(int i = 0; i < particle.previousPositionsValues.size(); i++) {
-			
-			for(int j = i+1; j < particle.previousPositionsValues.size(); j++) {
-				
-				if(particle.previousPositionsValues.get(i) > particle.previousPositionsValues.get(j)) {
-					
-					Collections.swap(particle.previousPositionsValues, i, j);
-					Collections.swap(particle.previousPositions, i, j);
-					Collections.swap(particle.listOfLists, i, j);
-					
-					Collections.reverse(particle.previousPositionsValues);
-					Collections.reverse(particle.previousPositions);
-					Collections.reverse(particle.listOfLists);
-				}
-			}
-		}
-	}
 	
 	public void sortTest(ParticleEMP particle) {
 		
@@ -399,42 +349,12 @@ public class ParticleEMP {
 
 	public void cutPreviousPositions(ParticleEMP particle) {
 		
-		for(int i = memory; i < particle.previousPositionsValues.size(); i++) {
-			
-			particle.previousPositionsValues.remove(i);
-			particle.previousPositions.remove(i);
-			particle.listOfLists.remove(i);
-			
-			//System.out.println("ppV: " + particle.previousPositionsValues);
-			//System.out.println("pp: " + particle.previousPositions);
-			//System.out.println("lol: " + particle.listOfLists);
+		for(int i = memory; i < particle.allPBestAttempts.size(); i++) {
 			
 			particle.allPBestAttempts.remove(i);
 			particle.listOfpBest.remove(i);
 		}
 	}
-
-	public ArrayList<Object> getPreviousPositions() {
-		
-		return previousPositions;
-	}
-	
-	public ArrayList<ArrayList<Double>> getlOL() {
-		
-		return listOfLists;
-	}
-
-	public ArrayList<Object> cloneObj(ArrayList<Object> arrayList) {
-
-		return new ArrayList<Object>(arrayList);
-	}
-
-	public ArrayList<ArrayList<Double>> cloneLOL(ArrayList<ArrayList<Double>> arrayList) {
-
-		return new ArrayList<ArrayList<Double>>(arrayList);
-	}
-	
-	
 	
 	public ArrayList<ArrayList<Double>> getlistOfpBest() {
 		

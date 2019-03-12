@@ -3,8 +3,6 @@ package ParticleSwarmOptimizer;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-import javax.swing.JFrame;
-
 public class Main {
 
 	public static void main(String[] args) throws InterruptedException {
@@ -116,14 +114,15 @@ public class Main {
 			dimensions = 10;
 		}
 		
-		//for(int i = 0; i < 100; i++) {
+		/*for(int i = 0; i < 100; i++) {
 			
 			//Swarm swarm = new Swarm(function, numberOfParticles, numberOfIterations, dimensions);
 			//SwarmEMP swarm = new SwarmEMP(function, numberOfParticles, numberOfIterations, dimensions, memory);
-		//}
+			//SwarmAWL swarm = new SwarmAWL(function, numberOfParticles, numberOfIterations, dimensions);
+		}*/
 		//Swarm swarm = new Swarm(function, numberOfParticles, numberOfIterations, dimensions);
 		//SwarmEMP swarm = new SwarmEMP(function, numberOfParticles, numberOfIterations, dimensions, memory);
-		SwarmAWL swarm = new SwarmAWL(function, numberOfParticles, numberOfIterations, dimensions);
+		//SwarmAWL swarm = new SwarmAWL(function, numberOfParticles, numberOfIterations, dimensions);
 	}
 	
 	public static Functions.FunctionChoices getFunction(int choice) {

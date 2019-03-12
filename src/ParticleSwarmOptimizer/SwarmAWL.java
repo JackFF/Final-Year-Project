@@ -16,14 +16,14 @@ public class SwarmAWL {
 	double gWorst = Double.NEGATIVE_INFINITY;
 	ArrayList<Double> gBestLocation;
 	ArrayList<Double> gWorstLocation;
-	double social = 2.05;
+	double social1 = 1.845;
+	double social2 = 0.205;
 	Exporter exp = new Exporter();
 	boolean check;
 	ParticleAWL particle = new ParticleAWL();
 	ArrayList<Double> gBestValues;
 	ArrayList<Integer> iterations;
-	
-	ArrayList<Double> realGBestLocation;
+	double constrictionFactor = 0.7298437881;
 
 	public SwarmAWL(FunctionChoices function, int numberOfParticles, int numberOfIterations, int dimensions) {
 		
@@ -39,8 +39,6 @@ public class SwarmAWL {
 	}
 
 	private void execute() {
-		
-		//Particle particle;
 		
 		for(int i = 0; i < numberOfParticles; i++) {
 			
@@ -85,6 +83,7 @@ public class SwarmAWL {
 				
 				//System.out.println("old pBest = " + particles.get(j).getPBest());
 				particles.get(j).updatePBest(particles.get(j));
+				particles.get(j).updatePWorst(particles.get(j));
 				//System.out.println("new pBest = " + particles.get(j).getPBest());
 				//System.out.println("old gBest: " + gBest);
 				updateGBest(particles.get(j));
@@ -137,8 +136,6 @@ public class SwarmAWL {
 			gBestLocation = particle.getPBestLocation();
 			//System.out.println("Particles Best Location: " + particle.getPBestLocation());
 			//System.out.println("New gBest Location: " + gBestLocation);
-			
-			realGBestLocation = particle.clone(gBestLocation);
 		}
 	}
 	
@@ -151,8 +148,6 @@ public class SwarmAWL {
 			gWorstLocation = particle.getPWorstLocation();
 			//System.out.println("Particles Best Location: " + particle.getPBestLocation());
 			//System.out.println("New gBest Location: " + gBestLocation);
-			
-			//realGBestLocation = particle.clone(gBestLocation);
 		}
 	}
 	
@@ -173,6 +168,16 @@ public class SwarmAWL {
 		ArrayList<Double> gBest = particle.clone(gB);
 		//System.out.println("gBest: " + gBest);
 		
+		ArrayList<Double> pW = particle.getPWorstLocation();
+		//System.out.println("pW: " + pW);
+		ArrayList<Double> pWorst = particle.clone(pW);
+		//System.out.println("pWorst: " + pWorst);
+		
+		ArrayList<Double> gW = gWorstLocation;
+		//System.out.println("gW: " + gW);
+		ArrayList<Double> gWorst = particle.clone(gW);
+		//System.out.println("gWorst: " + gWorst);
+		
 		ArrayList<Double> cL1 = particle.getLocation();
 		//System.out.println("cL1: " + cL1);
 		ArrayList<Double> currentLocation1 = particle.clone(cL1);
@@ -188,12 +193,23 @@ public class SwarmAWL {
 		ArrayList<Double> currentLocation3 = particle.clone(cL3);
 		//System.out.println("currentLocation3: " + currentLocation3);
 		
+		ArrayList<Double> cL4 = particle.getLocation();
+		//System.out.println("cL4: " + cL4);
+		ArrayList<Double> currentLocation4 = particle.clone(cL4);
+		//System.out.println("currentLocation4: " + currentLocation4);
+		
+		ArrayList<Double> cL5 = particle.getLocation();
+		//System.out.println("cL5: " + cL5);
+		ArrayList<Double> currentLocation5 = particle.clone(cL5);
+		//System.out.println("currentLocation5: " + currentLocation5);
+		
 		Random random = new Random();
 		double r1 = random.nextDouble();
 		double r2 = random.nextDouble();
+		double r3 = random.nextDouble();
+		double r4 = random.nextDouble();
 		
 		double maxRange = particle.getMaxRange();
-		double minRange = particle.getMinRange();
 		
 		//System.out.println("r1: " + r1);
 		//System.out.println("r2: " + r2);
@@ -204,10 +220,12 @@ public class SwarmAWL {
 			
 			double previousVelocity = newVelocity.get(i);
 			
-			double t1 = (r1 * social * (pBest.get(i) - currentLocation1.get(i)));
-			double t2 = (r2 * social * (gBest.get(i) - currentLocation2.get(i)));
+			double p1 = (r1 * social1 * (pBest.get(i) - currentLocation1.get(i)));
+			double p2 = (r2 * social1 * (gBest.get(i) - currentLocation2.get(i)));
+			double p3 = (r3 * social2 * (p1 / (1 + Math.abs(currentLocation3.get(i) - pWorst.get(i)))));
+			double p4 = (r4 * social2 * (p2 / (1 + Math.abs(currentLocation4.get(i) - gWorst.get(i)))));
 			
-			double newVel = 0.7298437881 * (previousVelocity + t1 + t2);
+			double newVel = constrictionFactor * (previousVelocity + p1 + p2 + p3 + p4);
 			
 			newVelocity.set(i, newVel);
 		}
@@ -227,19 +245,19 @@ public class SwarmAWL {
 		
 		for(int i = 0; i < dimensions; i++) {
 			
-			if(currentLocation3.get(i) + newVelocity.get(i) > maxRange) {
+			if(currentLocation5.get(i) + newVelocity.get(i) > maxRange) {
 				
-				double newPos = maxRange - (currentLocation3.get(i) + newVelocity.get(i) - maxRange);
-				currentLocation3.set(i, newPos);
+				double newPos = maxRange - (currentLocation5.get(i) + newVelocity.get(i) - maxRange);
+				currentLocation5.set(i, newPos);
 				
 				double newVel = 0 - newVelocity.get(i);
 				newVelocity.set(i, newVel);
 			}
 			
-			else if(currentLocation3.get(i) + newVelocity.get(i) < maxRange) {
+			else if(currentLocation5.get(i) + newVelocity.get(i) < maxRange) {
 				
-				double newPos = maxRange + ((-maxRange) - (currentLocation3.get(i) + newVelocity.get(i)));
-				currentLocation3.set(i, newPos);
+				double newPos = maxRange + ((-maxRange) - (currentLocation5.get(i) + newVelocity.get(i)));
+				currentLocation5.set(i, newPos);
 				
 				double newVel = 0 - newVelocity.get(i);
 				newVelocity.set(i, newVel);
@@ -247,14 +265,14 @@ public class SwarmAWL {
 			
 			else {
 				
-				double newPos = currentLocation3.get(i) + newVelocity.get(i); // particle is within acceptable region											
-				currentLocation3.set(i, newPos);
+				double newPos = currentLocation5.get(i) + newVelocity.get(i);											
+				currentLocation5.set(i, newPos);
 			}
 		}
 		
 		//System.out.println("new currentLocation3: " + currentLocation3);
 		
 		particle.setVelocity(newVelocity);
-		particle.setLocation(currentLocation3);	
+		particle.setLocation(currentLocation5);	
 	}
 }

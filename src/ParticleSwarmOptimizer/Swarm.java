@@ -20,8 +20,7 @@ public class Swarm {
 	Particle particle = new Particle();
 	ArrayList<Double> gBestValues;
 	ArrayList<Integer> iterations;
-	
-	ArrayList<Double> realGBestLocation;
+	double constrictionFactor = 0.7298437881;
 
 	public Swarm(FunctionChoices function, int numberOfParticles, int numberOfIterations, int dimensions) {
 		
@@ -37,8 +36,6 @@ public class Swarm {
 	}
 
 	private void execute() {
-		
-		//Particle particle;
 		
 		for(int i = 0; i < numberOfParticles; i++) {
 			
@@ -126,8 +123,6 @@ public class Swarm {
 			gBestLocation = particle.getPBestLocation();
 			//System.out.println("Particles Best Location: " + particle.getPBestLocation());
 			//System.out.println("New gBest Location: " + gBestLocation);
-			
-			realGBestLocation = particle.clone(gBestLocation);
 		}
 	}
 	
@@ -168,7 +163,6 @@ public class Swarm {
 		double r2 = random.nextDouble();
 		
 		double maxRange = particle.getMaxRange();
-		double minRange = particle.getMinRange();
 		
 		//System.out.println("r1: " + r1);
 		//System.out.println("r2: " + r2);
@@ -179,10 +173,10 @@ public class Swarm {
 			
 			double previousVelocity = newVelocity.get(i);
 			
-			double t1 = (r1 * social * (pBest.get(i) - currentLocation1.get(i)));
-			double t2 = (r2 * social * (gBest.get(i) - currentLocation2.get(i)));
+			double p1 = (r1 * social * (pBest.get(i) - currentLocation1.get(i)));
+			double p2 = (r2 * social * (gBest.get(i) - currentLocation2.get(i)));
 			
-			double newVel = 0.7298437881 * (previousVelocity + t1 + t2);
+			double newVel = constrictionFactor * (previousVelocity + p1 + p2);
 			
 			newVelocity.set(i, newVel);
 		}
