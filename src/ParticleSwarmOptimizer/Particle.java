@@ -21,15 +21,10 @@ public class Particle {
 		this.function = function;
 		this.dimensions = dimensions;
 		location = setInitialPosition(dimensions);
-		//System.out.println("Initial Locations: " + location);
 		velocity = setInitial(dimensions);
 		pBestLocation = setInitial(dimensions);
 		pBest = getInitialPBest();
 		velocity = setInitialVelocity(dimensions);
-	}
-
-	public Particle() {
-		
 	}
 
 	public ArrayList<Double> setInitial(int dimensions) {
