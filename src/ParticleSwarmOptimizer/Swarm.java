@@ -11,6 +11,7 @@ public class Swarm {
 	int numberOfParticles;
 	int numberOfIterations;
 	int dimensions;
+	String prefix;
 	ArrayList<Particle> particles;
 	double gBest = Double.POSITIVE_INFINITY;
 	ArrayList<Double> gBestLocation;
@@ -21,13 +22,15 @@ public class Swarm {
 	ArrayList<Double> gBestValues;
 	ArrayList<Integer> iterations;
 	double constrictionFactor = 0.7298437881;
+	int count = 0;
 
-	public Swarm(FunctionChoices function, int numberOfParticles, int numberOfIterations, int dimensions) {
+	public Swarm(FunctionChoices function, int numberOfParticles, int numberOfIterations, int dimensions, String prefix) {
 		
 		this.function = function;
 		this.numberOfParticles = numberOfParticles;
 		this.numberOfIterations = numberOfIterations;
 		this.dimensions = dimensions;
+		this.prefix = prefix;
 		particles = new ArrayList<Particle>();
 		gBestLocation = particle.setInitial(dimensions);
 		gBestValues = new ArrayList<Double>();
@@ -93,11 +96,11 @@ public class Swarm {
 		}
 		
 		System.out.println("---------------------------RESULT---------------------------");
-			
-		System.out.println("Coords: " + gBestLocation);
+		
+		//System.out.println("Coords: " + gBestLocation);
 		System.out.println("Final Best Evaluation: " + gBest);
-		//exp.export(gBest, gBestLocation, function, numberOfParticles, numberOfIterations, dimensions);
-		//exp.export(gBestValues, iterations, function);
+		exp.export(gBest, gBestLocation, function, numberOfParticles, numberOfIterations, dimensions, prefix);
+		exp.export(gBestValues, iterations, function, prefix);
 	}
 
 	private void updatePrintout(int i, boolean check) {
@@ -109,8 +112,49 @@ public class Swarm {
 			
 			double value = gBest;
 			
-			gBestValues.add(value);
-			iterations.add(i + 1);
+			if((i+1) < 150) {
+				
+				gBestValues.add(value);
+				iterations.add(i + 1);
+			}
+			
+			else if((i+1) < 500) {
+				
+				if(((i+1) % 2) == 0) {
+					
+					gBestValues.add(value);
+					iterations.add(i + 1);
+				}
+			}
+			
+			else if((i+1) < 1000) {
+				
+				if(((i+1) % 5) == 0) {
+					
+					gBestValues.add(value);
+					iterations.add(i + 1);
+				}
+			}
+			
+			else if((i+1) < 5000) {
+				
+				if(((i+1) % 20) == 0) {
+					
+					gBestValues.add(value);
+					iterations.add(i + 1);
+				}
+			}
+			
+			else if((i+1) > 5000) {
+				
+				if(((i+1) % 50) == 0) {
+					
+					gBestValues.add(value);
+					iterations.add(i + 1);
+				}
+			}
+			
+			count++;
 		}
 	}
 
@@ -183,14 +227,14 @@ public class Swarm {
 		
 		for(int i = 0; i < dimensions; i++) {
 			
-			if(newVelocity.get(i) > (maxRange)) {
+			if(newVelocity.get(i) > (maxRange * 2)) {
 				
-				newVelocity.set(i, maxRange);
+				newVelocity.set(i, (maxRange*2));
 			}
 			
-			else if(newVelocity.get(i) < 0 - maxRange) {
+			else if(newVelocity.get(i) < (0 - maxRange) * 2) {
 				
-				newVelocity.set(i, 0 - maxRange);
+				newVelocity.set(i, ((0 - maxRange) * 2));
 			}
 		}
 		
@@ -205,9 +249,9 @@ public class Swarm {
 				newVelocity.set(i, newVel);
 			}
 			
-			else if(currentLocation3.get(i) + newVelocity.get(i) < maxRange) {
+			else if(currentLocation3.get(i) + newVelocity.get(i) < (0 - maxRange)) {
 				
-				double newPos = maxRange + ((-maxRange) - (currentLocation3.get(i) + newVelocity.get(i)));
+				double newPos = -maxRange + ((-maxRange) - (currentLocation3.get(i) + newVelocity.get(i)));
 				currentLocation3.set(i, newPos);
 				
 				double newVel = 0 - newVelocity.get(i);

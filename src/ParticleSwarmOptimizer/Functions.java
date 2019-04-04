@@ -40,6 +40,9 @@ public class Functions {
 	
 	public static double ackley(ArrayList <Double> coords, int dimensions){
 		
+		/*return -20.0*Math.exp(-0.2*Math.sqrt(sum1 / ((double )x.length))) + 20
+                - Math.exp(sum2 /((double )x.length)) + Math.exp(1.0);*/
+		
 		double p1 = 0.0;
 		double p2 = 0.0;
 		double p3 = 0.0;
@@ -51,7 +54,8 @@ public class Functions {
 			p2 = p2 + Math.cos(2 * Math.PI * x);
 		}
 		
-		p3 = -(20 * Math.exp(-0.2 * Math.sqrt(p1 / dimensions))) - (Math.exp(p2 / dimensions)) + 20 + (Math.E);
+		//p3 = -(20 * Math.exp(-0.2 * Math.sqrt(p1 / dimensions))) - (Math.exp(p2 / dimensions)) + 20 + (Math.E);
+		p3 = -20 * Math.exp(-0.2 * Math.sqrt(p1 / (double) (dimensions))) + 20 - Math.exp(p2 / (double) (dimensions)) + Math.exp(1.0);
 		
 		return p3;
 	}

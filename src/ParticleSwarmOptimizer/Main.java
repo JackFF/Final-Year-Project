@@ -12,13 +12,13 @@ public class Main {
 		
 		Scanner input = new Scanner(System.in);
 		int functionChoice = 0;
-		int numberOfParticles = 0;
-		int numberOfIterations = 0;
+		int numberOfParticles = 50;
+		int numberOfIterations = 10000;
 		Functions.FunctionChoices function = null;
 		int dimensions = 30;
-		int memory = 2;
+		int memory = 5;
 		
-		System.out.println("Welcome to my Particle Swarm Optimizer!");
+		/*System.out.println("Welcome to my Particle Swarm Optimizer!");
 		System.out.println("You must select each of the following: ");
 		System.out.println("Only input integers");
 		
@@ -100,11 +100,11 @@ public class Main {
 				Thread.sleep(1000);
 			}
 			
-		} while(numberOfIterations < 10 || numberOfIterations > 100000);
+		} while(numberOfIterations < 10 || numberOfIterations > 100000);*/
 		
-		function = getFunction(functionChoice);
+		//function = getFunction(functionChoice);
 		
-		if(functionChoice == 6) {
+		/*if(functionChoice == 6) {
 			
 			dimensions = 2;
 		}
@@ -112,18 +112,43 @@ public class Main {
 		else if(functionChoice == 7) {
 			
 			dimensions = 10;
-		}
-		
-		/*for(int i = 0; i < 100; i++) {
-			
-			//Swarm swarm = new Swarm(function, numberOfParticles, numberOfIterations, dimensions);
-			//SwarmEMP swarm = new SwarmEMP(function, numberOfParticles, numberOfIterations, dimensions, memory);
-			//SwarmAWL swarm = new SwarmAWL(function, numberOfParticles, numberOfIterations, dimensions);
 		}*/
-		//Swarm swarm = new Swarm(function, numberOfParticles, numberOfIterations, dimensions);
-		//SwarmEMP swarm = new SwarmEMP(function, numberOfParticles, numberOfIterations, dimensions, memory);
-		//SwarmAWL swarm = new SwarmAWL(function, numberOfParticles, numberOfIterations, dimensions);
+		
+		for(functionChoice = 1; functionChoice < 8; functionChoice++) {
+			
+			function = getFunction(functionChoice);
+			
+			if(functionChoice == 6) {
+				
+				dimensions = 2;
+			}
+			
+			else if(functionChoice == 7) {
+				
+				dimensions = 10;
+			}
+			
+			for(int i = 0; i < 3; i++) {
+				
+				Swarm swarm = new Swarm(function, numberOfParticles, numberOfIterations, dimensions, "global");
+				//SwarmEMP swarmEMP = new SwarmEMP(function, numberOfParticles, numberOfIterations, dimensions, 5, "EMP");
+				//SwarmAWL swarmAWL = new SwarmAWL(function, numberOfParticles, numberOfIterations, dimensions, "AWL");
+				//SwarmEMPAWL swarmEMPAWL = new SwarmEMPAWL(function, numberOfParticles, numberOfIterations, dimensions, 5, "EMPAWL");
+			}
+			
+			for(int i = 0; i < 1; i ++) {
+				
+				for(memory = 2; memory < 6; memory++) {
+					
+					//SwarmEMP swarmEMP = new SwarmEMP(function, numberOfParticles, numberOfIterations, dimensions, memory, "EMP");
+					//SwarmEMPAWL swarmEMPAWL = new SwarmEMPAWL(function, numberOfParticles, numberOfIterations, dimensions, memory, "EMPAWL");
+				}
+			}
+			//Swarm swarm = new Swarm(function, numberOfParticles, numberOfIterations, dimensions, "global");
+			//SwarmAWL swarmAWL = new SwarmAWL(function, numberOfParticles, numberOfIterations, dimensions, "AWL");
+		}
 	}
+			
 	
 	public static Functions.FunctionChoices getFunction(int choice) {
 		

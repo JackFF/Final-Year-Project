@@ -24,13 +24,15 @@ public class SwarmAWL {
 	ArrayList<Double> gBestValues;
 	ArrayList<Integer> iterations;
 	double constrictionFactor = 0.7298437881;
+	String prefix;
 
-	public SwarmAWL(FunctionChoices function, int numberOfParticles, int numberOfIterations, int dimensions) {
+	public SwarmAWL(FunctionChoices function, int numberOfParticles, int numberOfIterations, int dimensions, String prefix) {
 		
 		this.function = function;
 		this.numberOfParticles = numberOfParticles;
 		this.numberOfIterations = numberOfIterations;
 		this.dimensions = dimensions;
+		this.prefix = prefix;
 		particles = new ArrayList<ParticleAWL>();
 		gBestLocation = particle.setInitial(dimensions);
 		gBestValues = new ArrayList<Double>();
@@ -52,9 +54,9 @@ public class SwarmAWL {
 		double oldGBest = gBest;
 		double oldGWorst = gWorst;
 			
-		System.out.println("--------------------------Beginning Optimization-------------------------");
-        System.out.println("Global Best Value at Iteration " + 0 + ":\t"  + gBest);
-        System.out.println("Global Best Location at Iteration " + 0 + ":\t" + "Coords: " + gBestLocation + "\n");
+		//System.out.println("--------------------------Beginning Optimization-------------------------");
+        //System.out.println("Global Best Value at Iteration " + 0 + ":\t"  + gBest);
+        //System.out.println("Global Best Location at Iteration " + 0 + ":\t" + "Coords: " + gBestLocation + "\n");
         
         gBestValues.add(gBest);
 		iterations.add(0);
@@ -105,25 +107,65 @@ public class SwarmAWL {
 			updatePrintout(i, check);
 		}
 		
-		System.out.println("---------------------------RESULT---------------------------");
+		//System.out.println("---------------------------RESULT---------------------------");
 			
-		System.out.println("Coords: " + gBestLocation);
-		System.out.println("Final Best Evaluation: " + gBest);
-		//exp.export(gBest, gBestLocation, function, numberOfParticles, numberOfIterations, dimensions);
-		//exp.export(gBestValues, iterations, function);
+		//System.out.println("Coords: " + gBestLocation);
+		//System.out.println("Final Best Evaluation: " + gBest);
+		//exp.export(gBest, gBestLocation, function, numberOfParticles, numberOfIterations, dimensions, prefix);
+		exp.export(gBestValues, iterations, function, prefix);
 	}
 
 	private void updatePrintout(int i, boolean check) {
 		
 		if(check == true) {
 				
-			System.out.println("Global Best Value at Iteration " + (i + 1) + ":\t"  + gBest);
-			System.out.println("Global Best Location at Iteration " + (i + 1) + ":\t" + "Coords: " + gBestLocation + "\n");
+			//System.out.println("Global Best Value at Iteration " + (i + 1) + ":\t"  + gBest);
+			//System.out.println("Global Best Location at Iteration " + (i + 1) + ":\t" + "Coords: " + gBestLocation + "\n");
 			
 			double value = gBest;
 			
-			gBestValues.add(value);
-			iterations.add(i + 1);
+			if((i+1) < 150) {
+				
+				gBestValues.add(value);
+				iterations.add(i + 1);
+			}
+			
+			else if((i+1) < 500) {
+				
+				if(((i+1) % 2) == 0) {
+					
+					gBestValues.add(value);
+					iterations.add(i + 1);
+				}
+			}
+			
+			else if((i+1) < 1000) {
+				
+				if(((i+1) % 5) == 0) {
+					
+					gBestValues.add(value);
+					iterations.add(i + 1);
+				}
+			}
+			
+			else if((i+1) < 5000) {
+				
+				if(((i+1) % 20) == 0) {
+					
+					gBestValues.add(value);
+					iterations.add(i + 1);
+				}
+			}
+			
+			else if((i+1) > 5000) {
+				
+				if(((i+1) % 50) == 0) {
+					
+					gBestValues.add(value);
+					iterations.add(i + 1);
+				}
+			}
+			
 		}
 	}
 
@@ -232,14 +274,14 @@ public class SwarmAWL {
 		
 		for(int i = 0; i < dimensions; i++) {
 			
-			if(newVelocity.get(i) > (maxRange)) {
+			if(newVelocity.get(i) > (maxRange * 2)) {
 				
-				newVelocity.set(i, maxRange);
+				newVelocity.set(i, (maxRange * 2));
 			}
 			
-			else if(newVelocity.get(i) < 0 - maxRange) {
+			else if(newVelocity.get(i) < ((0 - maxRange) * 2)) {
 				
-				newVelocity.set(i, 0 - maxRange);
+				newVelocity.set(i, ((0 - maxRange) * 2));
 			}
 		}
 		
@@ -254,7 +296,7 @@ public class SwarmAWL {
 				newVelocity.set(i, newVel);
 			}
 			
-			else if(currentLocation5.get(i) + newVelocity.get(i) < maxRange) {
+			else if(currentLocation5.get(i) + newVelocity.get(i) < (0 - maxRange)) {
 				
 				double newPos = maxRange + ((-maxRange) - (currentLocation5.get(i) + newVelocity.get(i)));
 				currentLocation5.set(i, newPos);

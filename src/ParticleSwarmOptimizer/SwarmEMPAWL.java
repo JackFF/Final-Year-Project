@@ -6,19 +6,22 @@ import java.util.Random;
 
 import ParticleSwarmOptimizer.Functions.FunctionChoices;
 
-public class SwarmEMP {
+public class SwarmEMPAWL {
 	
 	FunctionChoices function;
 	int numberOfParticles;
 	int numberOfIterations;
 	int dimensions;
-	ArrayList<ParticleEMP> particles;
+	ArrayList<ParticleEMPAWL> particles;
 	double gBest = Double.POSITIVE_INFINITY;
+	double gWorst = Double.NEGATIVE_INFINITY;
 	ArrayList<Double> gBestLocation;
-	double social = 2.05;
+	ArrayList<Double> gWorstLocation;
+	double social1 = 1.845;
+	double social2 = 0.205;
 	Exporter exp = new Exporter();
 	boolean check;
-	ParticleEMP particle = new ParticleEMP();
+	ParticleEMPAWL particle = new ParticleEMPAWL();
 	int memory;
 	ArrayList<Double> gBestValues;
 	ArrayList<Integer> iterations;
@@ -26,7 +29,7 @@ public class SwarmEMP {
 	int count = 0;
 	String prefix;
 
-	public SwarmEMP(FunctionChoices function, int numberOfParticles, int numberOfIterations, int dimensions, int memory, String prefix) {
+	public SwarmEMPAWL(FunctionChoices function, int numberOfParticles, int numberOfIterations, int dimensions, int memory, String prefix) {
 		
 		this.function = function;
 		this.numberOfParticles = numberOfParticles;
@@ -34,7 +37,7 @@ public class SwarmEMP {
 		this.dimensions = dimensions;
 		this.memory = memory;
 		this.prefix = prefix;
-		particles = new ArrayList<ParticleEMP>();
+		particles = new ArrayList<ParticleEMPAWL>();
 		gBestLocation = particle.setInitial(dimensions);
 		gBestValues = new ArrayList<Double>();
 		iterations = new ArrayList<Integer>();
@@ -45,13 +48,15 @@ public class SwarmEMP {
 		
 		for(int i = 0; i < numberOfParticles; i++) {
 			
-			ParticleEMP particle = new ParticleEMP(function, dimensions, memory);
+			ParticleEMPAWL particle = new ParticleEMPAWL(function, dimensions, memory);
 			particles.add(particle);
 			updateGBest(particle);
+			updateGWorst(particle);
 		}
 		
 		
 		double oldGBest = gBest;
+		double oldGWorst = gWorst;
 			
 		//System.out.println("--------------------------Beginning Optimization-------------------------");
         //System.out.println("Global Best Value at Iteration " + 0 + ":\t"  + gBest);
@@ -74,11 +79,17 @@ public class SwarmEMP {
 				check = false;
 			}
 			
+			if(gWorst > oldGWorst) {
+				
+				oldGWorst = gWorst;
+			}
+			
 			
 			for(int j = 0; j < particles.size(); j++) {
 				
 				//System.out.println("old pBest = " + particles.get(j).getPBest());
 				particles.get(j).updatePBest(particles.get(j));
+				particles.get(j).updatePWorst(particles.get(j));
 				//System.out.println("new pBest = " + particles.get(j).getPBest());
 				//System.out.println("old gBest: " + gBest);
 				updateGBest(particles.get(j));
@@ -156,13 +167,14 @@ public class SwarmEMP {
 					iterations.add(i + 1);
 				}
 			}
+			
+			count++;
 			//System.out.println("gbv: " + gBestValues);
 			//System.out.println("iterations: " + iterations);
-			count++;
 		}
 	}
 
-	private void updateGBest(ParticleEMP particle) {
+	private void updateGBest(ParticleEMPAWL particle) {
 		
 		if(particle.getPBest() < gBest) {
 			
@@ -174,7 +186,19 @@ public class SwarmEMP {
 		}
 	}
 	
-	private void updateVelocity(ParticleEMP particle) {
+	private void updateGWorst(ParticleEMPAWL particle) {
+		
+		if(particle.getPWorst() > gWorst) {
+			
+			gWorst = particle.getPWorst();
+			//System.out.println("New gBest: " + gBest);
+			gWorstLocation = particle.getPWorstLocation();
+			//System.out.println("Particles Best Location: " + particle.getPBestLocation());
+			//System.out.println("New gBest Location: " + gBestLocation);
+		}
+	}
+	
+	private void updateVelocity(ParticleEMPAWL particle) {
 		
 		ArrayList<Double> chance = new ArrayList<Double>();
 		
@@ -194,6 +218,16 @@ public class SwarmEMP {
 		//System.out.println("oV: " + oV);
 		ArrayList<Double> oldVelocity = particle.clone(oV);
 		//System.out.println("oldVelocity: " + oldVelocity);
+		
+		ArrayList<Double> pW = particle.getPWorstLocation();
+		//System.out.println("pW: " + pW);
+		ArrayList<Double> pWorst = particle.clone(pW);
+		//System.out.println("pWorst: " + pWorst);
+		
+		ArrayList<Double> gW = gWorstLocation;
+		//System.out.println("gW: " + gW);
+		ArrayList<Double> gWorst = particle.clone(gW);
+		//System.out.println("gWorst: " + gWorst);
 		
 		ArrayList<Double> y1 = new ArrayList<Double>();
 		
@@ -247,6 +281,8 @@ public class SwarmEMP {
 			y1 = listOfPBest.get(choice);
 		}
 		
+		//System.out.println("else y1: " + y1);
+		
 		ArrayList<Double> gB = gBestLocation;
 		//System.out.println("gB: " + gB);
 		ArrayList<Double> gBest = particle.clone(gB);
@@ -267,9 +303,21 @@ public class SwarmEMP {
 		ArrayList<Double> currentLocation3 = particle.clone(cL3);
 		//System.out.println("currentLocation3: " + currentLocation3);
 		
+		ArrayList<Double> cL4 = particle.getLocation();
+		//System.out.println("cL4: " + cL4);
+		ArrayList<Double> currentLocation4 = particle.clone(cL4);
+		//System.out.println("currentLocation4: " + currentLocation4);
+		
+		ArrayList<Double> cL5 = particle.getLocation();
+		//System.out.println("cL5: " + cL5);
+		ArrayList<Double> currentLocation5 = particle.clone(cL5);
+		//System.out.println("currentLocation5: " + currentLocation5);
+		
 		Random random = new Random();
 		double r1 = random.nextDouble();
 		double r2 = random.nextDouble();
+		double r3 = random.nextDouble();
+		double r4 = random.nextDouble();
 		
 		double maxRange = particle.getMaxRange();
 		
@@ -282,10 +330,12 @@ public class SwarmEMP {
 		
 			double previousVelocity = newVelocity.get(i);
 		
-			double p1 = (r1 * social * (y1.get(i) - currentLocation1.get(i)));
-			double p2 = (r2 * social * (gBest.get(i) - currentLocation2.get(i)));
+			double p1 = (r1 * social1 * (y1.get(i) - currentLocation1.get(i)));
+			double p2 = (r2 * social1 * (gBest.get(i) - currentLocation2.get(i)));
+			double p3 = (r3 * social2 * (p1 / (1 + Math.abs(currentLocation3.get(i) - pWorst.get(i)))));
+			double p4 = (r4 * social2 * (p2 / (1 + Math.abs(currentLocation4.get(i) - gWorst.get(i)))));
 		
-			double newVel = constrictionFactor * (previousVelocity + p1 + p2);
+			double newVel = constrictionFactor * (previousVelocity + p1 + p2 + p3 + p4);
 		
 			newVelocity.set(i, newVel);
 		}
@@ -297,7 +347,7 @@ public class SwarmEMP {
 					newVelocity.set(i, (maxRange * 2));
 				}
 		
-			else if(newVelocity.get(i) < ((0 - maxRange) * 2)) {
+			else if(newVelocity.get(i) < 0 - maxRange) {
 			
 				newVelocity.set(i, ((0 - maxRange) * 2));
 			}
@@ -305,19 +355,19 @@ public class SwarmEMP {
 	
 		for(int i = 0; i < dimensions; i++) {
 		
-			if(currentLocation3.get(i) + newVelocity.get(i) > maxRange) {
+			if(currentLocation5.get(i) + newVelocity.get(i) > maxRange) {
 			
-				double newPos = maxRange - (currentLocation3.get(i) + newVelocity.get(i) - maxRange);
-				currentLocation3.set(i, newPos);
+				double newPos = maxRange - (currentLocation5.get(i) + newVelocity.get(i) - maxRange);
+				currentLocation5.set(i, newPos);
 			
 				double newVel = 0 - newVelocity.get(i);
 				newVelocity.set(i, newVel);
 			}
 		
-			else if(currentLocation3.get(i) + newVelocity.get(i) < (0 - maxRange)) {
+			else if(currentLocation5.get(i) + newVelocity.get(i) < (0 - maxRange)) {
 			
-				double newPos = maxRange + ((-maxRange) - (currentLocation3.get(i) + newVelocity.get(i)));
-				currentLocation3.set(i, newPos);
+				double newPos = maxRange + ((-maxRange) - (currentLocation5.get(i) + newVelocity.get(i)));
+				currentLocation5.set(i, newPos);
 			
 				double newVel = 0 - newVelocity.get(i);
 				newVelocity.set(i, newVel);
@@ -325,15 +375,15 @@ public class SwarmEMP {
 		
 			else {
 			
-				double newPos = currentLocation3.get(i) + newVelocity.get(i);
-				currentLocation3.set(i, newPos);
+				double newPos = currentLocation5.get(i) + newVelocity.get(i);
+				currentLocation5.set(i, newPos);
 			}
 		}
 	
 		//System.out.println("new currentLocation3: " + currentLocation3);
 	
 		particle.setVelocity(newVelocity);
-		particle.setLocation(currentLocation3);
+		particle.setLocation(currentLocation5);
 		
 	}
 
